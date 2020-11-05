@@ -27,13 +27,11 @@ const index = ({ userState, verifyUser, loading }) => {
   }, [userState]);
   return (
     <>
-      {loading ? (
-        <Loader />
-      ) : (
+
         <NavigationContainer>
           {isSignedIn ? <Authority /> : <AuthTab />}
         </NavigationContainer>
-      )}
+
     </>
   );
 };

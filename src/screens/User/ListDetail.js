@@ -28,8 +28,7 @@ import Avatar from "../../../assets/images/user1.jpeg";
 import Maps from "../../components/Generic/Maps";
 import Loader from "../../screens/Auth/Loader";
 import Carousel from "react-native-snap-carousel";
-import { styles } from "../../styles/User/ListDestailStyle";
-import ReviewBox from "../../components/User/Review";
+import { styles } from "../../styles/User/ListDestailStyle"
 const { width } = Dimensions.get("window");
 const ListDetail = ({ ...props }) => {
   const stars = [1, 2, 3, 4, 5];
@@ -49,7 +48,6 @@ const ListDetail = ({ ...props }) => {
   let dataLoader = props.loader;
 
   const [userReviews, setUserReviews] = useState([]);
-  const [attributesState , setAttributesState] = useState([])
   const [userData, setUserData] = useState({
     photoUrl: "",
     Name: "",
@@ -61,16 +59,6 @@ const ListDetail = ({ ...props }) => {
   useEffect(() => {
     props.serviceProviderInformation(data.userId);
     getServiceReview(data.id);
-
-    data.attributes.map((item)=>{
-      if(item.attributeState== true){
-        attributesState.push(item)
-        console.log("attribute", item)
-
-      }
-     
-
-    })
 
   }, []);
 
@@ -107,6 +95,7 @@ const ListDetail = ({ ...props }) => {
     if (ReviewsList.lenght == 0) {
       setLoader(true);
     }
+   
   }, [ReviewsList]);
 
   const renderItem = ({ item }) => {
@@ -136,8 +125,9 @@ const ListDetail = ({ ...props }) => {
         <Loader />
       ) : (
         <ScrollView style={styles.wrapper}>
+
           <Carousel
-            loop={true}
+          loop={true}
             data={data.imagesUrl}
             renderItem={renderItem}
             sliderWidth={width}
@@ -152,7 +142,7 @@ const ListDetail = ({ ...props }) => {
             <Text style={styles.services}>Services</Text>
 
             <View style={styles.checkboxList}>
-              {attributesState.map((item, index) => (
+              {data.attributes.map((item, index) => (
                 <View
                   key={index}
                   style={{
@@ -189,13 +179,78 @@ const ListDetail = ({ ...props }) => {
             </View>
 
             <View>
-              <View style={styles.reviewHeading}>
-                <Text style={styles.reviewHeadingText}>Reviews</Text>
+              <View
+                style={{
+                  flex: 1,
+                  backgroundColor: "#5c9b84",
+                  marginTop: 40,
+                  paddingBottom: 20,
+                  paddingTop: 20,
+                  color: "#fff",
+                }}
+              >
+                <Text
+                  style={{ fontSize: 16, textAlign: "center", color: "#fff" }}
+                >
+                  Reviews
+                </Text>
               </View>
               <View style={styles.review}>
                 <View style={styles.reviewsList}>
                   {ReviewsList.map((data, index) => (
-                    <ReviewBox key={index} data={data} />
+                    <View key={index} style={styles.reviewContainer}>
+                      <View style={styles.reviewListHead}>
+                        {data.photoURL !== "" ? (
+                          <Image
+                            style={styles.avatarImage}
+                            source={{ uri: data.photoURL }}
+                          />
+                        ) : (
+                          <Image style={styles.avatarImage} source={Avatar} />
+                        )}
+                        <View style={{ paddingLeft: 10, flexDirection: "row" }}>
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontWeight: "bold",
+                              color: "#404145",
+                            }}
+                          >
+                            {data.Name}
+                          </Text>
+
+                          <Entypo
+                            style={{ paddingLeft: 5 }}
+                            name="star"
+                            size={18}
+                            color="#fbbc04"
+                          />
+                          <Text style={{ paddingLeft: 5, color: "#fbbc04" }}>
+                            {data.totalRating}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={styles.reviewContent}>
+                        <Text
+                          style={{
+                            color: "#404145",
+                            paddingTop: 0,
+                            paddingBottom: 10,
+                          }}
+                        >
+                          {data.comment}
+                        </Text>
+                        <Text
+                          style={{
+                            paddingTop: 20,
+                            color: "#a9a9a9",
+                          }}
+                        >
+                          Published at:
+                          {data.createdAt.toDate().toLocaleDateString("en-US")}
+                        </Text>
+                      </View>
+                    </View>
                   ))}
                 </View>
 
@@ -323,3 +378,5 @@ export default connect(mapStateToProps, {
   addServiceReview,
   getServiceReview,
 })(ListDetail);
+
+

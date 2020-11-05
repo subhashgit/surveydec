@@ -5,11 +5,11 @@ import ListingItem from "../../components/User/ListingItem";
 import { Text } from "native-base";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { connect } from "react-redux";
-import { getServices, getMyServices } from "../../store/actions/Services";
+import { getServices } from "../../store/actions/Services";
 
-const Services = ({ navigation, getMyServices, services }) => {
+const Services = ({ navigation, getServices, services }) => {
   useEffect(() => {
-    getMyServices();
+    getServices();
   }, []);
 
   return (
@@ -17,7 +17,6 @@ const Services = ({ navigation, getMyServices, services }) => {
       <Header name="Services" navigation={navigation} visible={false} />
       <View style={styles.list}>
         <Animated.ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={{paddingBottom: 5 , fontSize: 13 , color: "#a9a9a9"}}>Active Services</Text>
           {services.map((data) => (
             <ListingItem key={data.id} data={data} navigation={navigation} />
           ))}
@@ -28,10 +27,10 @@ const Services = ({ navigation, getMyServices, services }) => {
 };
 const mapStateToProps = (state) => {
   return {
-    services: state.Service.myServices,
+    services: state.Service.services,
   };
 };
-export default connect(mapStateToProps, { getMyServices })(Services);
+export default connect(mapStateToProps, { getServices })(Services);
 
 const styles = StyleSheet.create({
   screen: {

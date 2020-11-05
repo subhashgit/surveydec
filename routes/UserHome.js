@@ -16,7 +16,6 @@ import EditImage from "../src/screens/Account/EditImage";
 import { createStackNavigator } from "@react-navigation/stack";
 import { profileInformation } from "../src/store/actions/User";
 import Notification from "../src/screens/User/Notification";
-import { FontAwesome5 } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -40,39 +39,15 @@ const userNotificationTab = () => {
 const UserTabs = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="home" color="#000" size={20} />
-          ),
-        }}
-        name="Home"
-        component={userNotificationTab}
-      />
+      <Tab.Screen name="Home" component={userNotificationTab} />
     </Tab.Navigator>
   );
 };
 const ProviderTabs = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="home" color="#000" size={20} />
-          ),
-        }}
-        name="Home"
-        component={Home}
-      />
-      <Tab.Screen
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="briefcase" color="#000" size={20} />
-          ),
-        }}
-        name="Services "
-        component={Services}
-      />
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Services " component={Services} />
     </Tab.Navigator>
   );
 };
@@ -113,7 +88,6 @@ const Account = () => {
         component={MyAccount}
       />
       <Stack.Screen name="EditImage" component={EditImage} />
-      <Stack.Screen name="Notification" component={Notification} />
     </Stack.Navigator>
   );
 };

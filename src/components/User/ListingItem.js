@@ -31,7 +31,7 @@ const ListingItem = ({ data, navigation }) => {
         });
       }}
     >
-      <View style={{ paddingBottom: 20 }}>
+      <View style={{ paddingBottom: 20, paddingLeft:15, paddingRight:15, }}>
         <Card style={{ height: 280 }}>
           <ImageBackground style={{ flex: 1 }} source={{ uri: serviceImage }}>
             <Text style={{ padding: 20, color: "#fff", fontSize: 18 }}>

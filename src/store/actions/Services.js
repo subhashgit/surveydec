@@ -6,12 +6,17 @@ export const AddNewService = (
 ) => async (dispatch, getState, { getFirestore, getFirebase }) => {
   const db = getFirestore();
   const firebase = getFirebase();
+  let attribute = [];
   let providerName;
   var user = await firebase.auth().currentUser;
   let serviceName = service.serviceName;
   let category = service.category;
   let location = service.location;
+  let maps = service.maps;
   let imageArray = [];
+  // let image = service.image;
+
+  // console.log("attributeee", attribute);
 
   if (user) {
     const data = await db
@@ -27,7 +32,9 @@ export const AddNewService = (
       .then(() => {
         images.forEach(async (serviceImage) => {
           const ImageResponse = await fetch(serviceImage);
+          // console.log("resss", res);
           const blob = await ImageResponse.blob();
+          const imageUrl = "";
 
           var ref = firebase.storage().ref().child(`images/${serviceImage}`);
 
@@ -212,47 +219,3 @@ export const getServiceReview = (id) => async (
     });
 };
 
-export const getMyServices = () => async (
-  dispatch,
-  getState,
-  { getFirestore, getFirebase }
-) => {
-  const db = getFirestore();
-  const firebase = getFirebase();
-  var user = await firebase.auth().currentUser;
-  let services = [];
-
-  if (user) {
-    const res = await db
-      .collection("services")
-      .where("approve", "==", true)
-      .get()
-      .then((response) => {
-        response.docs.forEach((userData) => {
-          if (user.uid == userData.data().userId) {
-            services.push({ ...userData.data(), id: userData.id });
-          }
-        });
-      })
-      .then(() => {
-        dispatch({
-          type: "MY_SERVICES",
-          payload: services,
-        });
-      });
-
-  
-  }
-};
-
-// .then((response) => {
-//   response.docs.forEach((item, index) => {
-//     console.log("item a daaraa", item.data())
-//     services.push({ ...item.data(), id: item.id });
-//   });
-//   console.log("servicessss", services);
-//   dispatch({
-//     type: "MY_SERVICES",
-//     payload: services,
-//   });
-// });
