@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { StyleSheet} from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   createDrawerNavigator,
@@ -16,6 +17,7 @@ import EditImage from "../src/screens/Account/EditImage";
 import { createStackNavigator } from "@react-navigation/stack";
 import { profileInformation } from "../src/store/actions/User";
 import Notification from "../src/screens/User/Notification";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -38,8 +40,23 @@ const userNotificationTab = () => {
 
 const UserTabs = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Home" component={userNotificationTab} />
+    <Tab.Navigator  tabBarOptions={{
+
+        inactiveTintColor:"#000",
+        activeTintColor: '#666',
+      }}>
+      <Tab.Screen name="Home" component={userNotificationTab} options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="home"    color={color} size={size} />
+          ),
+        }} />
+        <Tab.Screen name="Services"  component={Services}
+         options={{
+         tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="briefcase" color={color} size={size} />
+          ),
+        }} />
     </Tab.Navigator>
   );
 };
@@ -128,3 +145,6 @@ export default connect(mapStateToProps, {
   userStatus,
   profileInformation,
 })(UserHome);
+const styles = StyleSheet.create({
+  freak:{color:'#000'}
+})

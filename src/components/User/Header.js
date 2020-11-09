@@ -5,10 +5,10 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { connect } from "react-redux";
 import { profileInformation } from "../../store/actions/User";
 import imagebg from '../../../assets/images/hamburger_BG.jpg';
-import Icon from 'react-native-ionicons'
+import Icon from 'react-native-ionicons';
 
  var width = Dimensions.get('window').width; 
- var height = Dimensions.get('window').height;  
+ var height = Dimensions.get('screen').height;  
 const Header = ({
   navigation,
   visible,
@@ -60,7 +60,7 @@ const Header = ({
               />
             )}
           </TouchableOpacity>
-          <Text style={styles.text}>{name}</Text>
+          <Text style={styles.text}>Welcome Back {"\n"}Ramesh</Text>
         </View>
         <View style={styles.icons}>
           {visible && (
@@ -183,6 +183,12 @@ const styles = StyleSheet.create({
   text: {
     alignItems: "center",
     fontSize: 15,
+    
+  },
+
+  texttitle: {
+    alignItems: "center",
+    fontSize: 15,
     fontWeight: "bold",
   },
 
@@ -190,6 +196,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+    marginTop:5,
     flexDirection: "row",
   },
   userNameDetails: {
@@ -207,31 +214,22 @@ const styles = StyleSheet.create({
     overflow: "scroll",
   },
    centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+
     marginTop: 0,
     marginBottom:0,
   },
-  imagebg:{ width:width,paddingTop:50,paddingBottom:35, shadowColor: "#000",
-    shadowOffset: {
-      width: width,
-      height: height-30
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 0 },
+  imagebg:{ width:width,paddingTop:50,paddingBottom:35,  },
 
   modalView: {
    
     backgroundColor: "#efefef",
     borderRadius: 0,
      width: width,
-      height: height+23,
+      height: height,
     alignItems: "center",
    marginBottom:0,
-    elevation: 5
-  },
+   bottom:0,
+},
   openButton: {
     backgroundColor: "#fff",
     borderRadius: 50,
@@ -240,13 +238,7 @@ const styles = StyleSheet.create({
     textAlign:'center',
     marginTop:-30,
      shadowColor: "#000",
-    shadowOffset: {
-      width: 20,
-      height: 30
-    },
-    shadowOpacity: 0.5,
-    shadowRadius: 3.84,
-    elevation: 5 
+   
    
   },
   
@@ -279,7 +271,7 @@ listnavwrapper:{padding:20},
   navicon:{color:'#333',width:40},
   navicontxt:{fontWeight:'bold',fontSize:16, marginLeft:20, color:'#333',marginBottom:10},
   naviconsubtxt:{fontWeight:'normal',fontSize:14,color:'#666'},
-  copyrights:{position:'absolute',bottom:10,},
+  copyrights:{position:'absolute',bottom:50,},
   rightstxt:{textAlign:'center',  color:'#517fff'},
 switchswrap:{marginTop:40, marginBottom:20},
 switchs:{textAlign:'center'},

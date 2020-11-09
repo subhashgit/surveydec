@@ -35,12 +35,14 @@ export default connect(mapStateToProps, { getServices })(Services);
 const styles = StyleSheet.create({
   screen: {
     backgroundColor: "#f7f7f7",
-    padding: 20,
-    paddingTop: 40,
-    height: 670,
+    padding: 15,
+    paddingTop: 35,
+    
   },
   list: {
+
     paddingTop: 20,
     paddingBottom: 80,
+
   },
 });

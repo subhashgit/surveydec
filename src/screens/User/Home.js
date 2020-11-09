@@ -205,15 +205,15 @@ bannertitle:{ color: '#62ad80',
 
 bannerdescription:{color: '#999',
   fontSize: 16,
-  fontWeight: 'bold',marginBottom:20},
+marginBottom:20},
 bannerimg:{width:90,height:90},
 
 loginScreenButton:{ 
 
 textAlign:'center',
-paddingTop:10,
+paddingTop:8,
 padding:10,
-
+paddingBottom:8,
 display:'flex',
 alignItems:'center',
  flexDirection: 'row',
@@ -223,7 +223,7 @@ alignItems:'center',
  bannerbuttontok:{ 
   borderColor:'#62ad80',
 borderWidth:2,
-width:150,
+width:200,
 
 textAlign:'center',
 
@@ -238,7 +238,7 @@ alignItems:'center',
  },
  bannerbutton:{
 color:'#62ad80',  
-marginLeft:35
+marginLeft:60
 },
 categorieslisting:{
   marginTop:20,
