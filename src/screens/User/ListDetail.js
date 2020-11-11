@@ -100,39 +100,52 @@ const ListDetail = ({ ...props }) => {
 
   const renderItem = ({ item }) => {
     return (
-      <ImageBackground source={{ uri: item }} style={styles.image}>
-        <View>
-          <SafeAreaView style={styles.HeaderContainer}>
-            <View style={styles.headerCategory}>
-              <FontAwesome style={styles.brief} name="briefcase" />
-              <Text style={styles.title}>{data.category}</Text>
-            </View>
-            <AntDesign
-              onPress={navHandler}
-              style={styles.close}
-              name="closecircleo"
-            />
-          </SafeAreaView>
-          <Text style={styles.categoryTitle}>{data.serviceName} </Text>
-        </View>
-      </ImageBackground>
+    	<>
+      <ImageBackground source={{ uri: item }} style={styles.image}></ImageBackground>
+     
+      </>
     );
   };
 
   return (
     <>
+				<View style={styles.viewover}>
+		          <SafeAreaView style={styles.HeaderContainer}>
+		            <View style={styles.headerCategory}>
+		              <FontAwesome style={styles.brief} name="briefcase" />
+		              <Text style={styles.title}>{data.category}</Text>
+		            </View>
+		            <AntDesign
+		              onPress={navHandler}
+		              style={styles.close}
+		              name="closecircleo"
+		            />
+		          </SafeAreaView>
+		          <Text style={styles.categoryTitle}>{data.serviceName} </Text>
+		        </View>
+
       {dataLoader == false ? (
         <Loader />
       ) : (
-        <ScrollView style={styles.wrapper}>
+
+        <ScrollView style={styles.wrapper} >
+
+				
 
           <Carousel
-          loop={true}
+          	layout={'default'}
+          	loop={true}
             data={data.imagesUrl}
             renderItem={renderItem}
             sliderWidth={width}
             sliderHeight={300}
-            itemWidth={width}
+            itemWidth={width-30}
+            autoplay={true}
+         activeSlideAlignment={'start'}
+         inactiveSlideScale={1}
+         inactiveSlideOpacity={1}
+         loop={'enableSnap'}
+		activeSlideOffset={0}
           />
 
           <View style={styles.content}>

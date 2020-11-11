@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native";
-// const { width } = Dimensions.get("window");
+import { StyleSheet, Dimensions } from "react-native";
+ const { width } = Dimensions.get("window");
 export const styles = StyleSheet.create({
     reviewContent: {
         paddingTop: 10,
@@ -58,8 +58,10 @@ export const styles = StyleSheet.create({
         fontSize: 18,
         paddingLeft: 20,
         fontWeight: "bold",
+
       },
       location: {
+
         paddingTop: 20,
         fontSize: 20,
         color: "#000",
@@ -69,9 +71,21 @@ export const styles = StyleSheet.create({
         padding: 20,
       },
       image: {
-        flex: 1,
         height: 300,
-      },
+        paddingLeft:0,
+        paddingRight:0,
+        resizeMode: 'cover',   
+        flexDirection: 'row',
+
+             },
+    viewsli:{marginRight:-50},
+   
+    screenitem:{
+       display:'flex', 
+       flexDirection: 'row',
+     },
+
+
       heading: {
         fontWeight: "bold",
         fontSize: 20,
@@ -91,7 +105,7 @@ export const styles = StyleSheet.create({
       },
       wrapper: {
         backgroundColor: "#fff",
-        flex: 1,
+        position:'relative'
       },
       HeaderContainer: {
         padding: 20,
@@ -108,6 +122,7 @@ export const styles = StyleSheet.create({
       },
       close: {
         fontSize: 20,
+        right:20,
         color: "#fff",
       },
       checkboxList: {
@@ -132,5 +147,7 @@ export const styles = StyleSheet.create({
       },
       buttons: { color: "#5c9b84", marginTop: 20, backgroundColor: "#5c9b84" },
       buttonstxt: { color: "#fff" },
+      viewover:{position:'absolute',top:0, zIndex:99999,width:width},
 
+    corb:{marginRight:-60}
 });

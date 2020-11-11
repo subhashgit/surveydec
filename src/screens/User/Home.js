@@ -52,8 +52,9 @@ const Services = ({ navigation, getServices, services }) => {
       </View>
         <View style={styles.screenitemcontainer}>
 
-        
-            <ScrollView style={styles.screenitem} showsHorizontalScrollIndicator={false} horizontal={true}>
+         
+            <ScrollView  style={styles.screenitem}  showsHorizontalScrollIndicator={false} horizontal={true}>
+          
             {items.map((item) => (
               <View  style={[styles.listoption,{ backgroundColor:item.bgcolor}]} key={item.key}>
               <FontAwesome
@@ -65,6 +66,7 @@ const Services = ({ navigation, getServices, services }) => {
               
             </View>
             ))}
+           
          </ScrollView>
       </View>
         <View  style={styles.categorieslisting}>
@@ -224,15 +226,12 @@ alignItems:'center',
   borderColor:'#62ad80',
 borderWidth:2,
 width:200,
-
 textAlign:'center',
-
-
 borderColor:'#62ad80',
 borderWidth:2,
 display:'flex',
 alignItems:'center',
- flexDirection: 'row',
+flexDirection: 'row',
 
 
  },
