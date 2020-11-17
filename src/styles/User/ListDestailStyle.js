@@ -121,8 +121,9 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
       },
       close: {
-        fontSize: 20,
-        right:20,
+        fontSize: 24,
+        right:16,
+        top:-3,
         color: "#fff",
       },
       checkboxList: {
