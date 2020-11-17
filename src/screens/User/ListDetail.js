@@ -12,7 +12,7 @@ import {
   Dimensions,
 } from "react-native";
 import { Button } from "native-base";
-import { FontAwesome, AntDesign, Entypo } from "@expo/vector-icons";
+import { FontAwesome, AntDesign, Entypo, Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import CheckBoxList from "../../components/User/CheckBoxList";
 import LocationImage from "../../../assets/images/location.jpeg";
 import tick from "../../../assets/images/tick.png";
@@ -109,27 +109,34 @@ const ListDetail = ({ ...props }) => {
 
   return (
     <>
-				<View style={styles.viewover}>
-		          <SafeAreaView style={styles.HeaderContainer}>
-		            <View style={styles.headerCategory}>
-		              <FontAwesome style={styles.brief} name="briefcase" />
-		              <Text style={styles.title}>{data.category}</Text>
-		            </View>
-		            <AntDesign
-		              onPress={navHandler}
-		              style={styles.close}
-		              name="closecircleo"
-		            />
-		          </SafeAreaView>
-		          <Text style={styles.categoryTitle}>{data.serviceName} </Text>
-		        </View>
 
-      {dataLoader == false ? (
+     {dataLoader == false ? (
         <Loader />
       ) : (
+      
+				
+
+     
 
         <ScrollView style={styles.wrapper} >
+<View style={styles.viewover}>
+              <SafeAreaView style={styles.HeaderContainer}>
+                <View style={styles.headerCategory}>
+                  
+                  <MaterialCommunityIcons style={styles.brief}  onPress={navHandler} name="arrow-left" />
+                  
+                  <Text style={styles.title}>{data.category}</Text>
 
+                </View>
+                <MaterialCommunityIcons
+                 style={styles.close}
+                  name="filter-variant"
+                />
+                <Entypo name="share" size={20} color={'#fff'}/>
+
+              </SafeAreaView>
+              <Text style={styles.categoryTitle}>{data.serviceName} </Text>
+            </View>
 				
 
           <Carousel
