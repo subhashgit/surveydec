@@ -3,21 +3,21 @@ import { StyleSheet, View, Animated } from "react-native";
 import Header from "../../components/User/Header";
 import ListingItem from "../../components/User/ListingItem";
 import { Text } from "native-base";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { connect } from "react-redux";
-import { getServices, getMyServices } from "../../store/actions/Services";
+import { getMyServices } from "../../store/actions/Services";
 
 const Services = ({ navigation, getMyServices, services }) => {
   useEffect(() => {
     getMyServices();
   }, []);
-
   return (
     <View style={styles.screen}>
-      <Header name="Services" navigation={navigation} visible={false} />
+      <Header name="Services" navigation={navigation} visible={true} />
       <View style={styles.list}>
         <Animated.ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={{paddingBottom: 5 , fontSize: 13 , color: "#a9a9a9"}}>Active Services</Text>
+          <Text style={{ paddingBottom: 5, fontSize: 13, color: "#a9a9a9" }}>
+            Active Services
+          </Text>
           {services.map((data) => (
             <ListingItem key={data.id} data={data} navigation={navigation} />
           ))}

@@ -10,15 +10,26 @@ const Header = ({
   name,
   profileInfo,
   profileInformation,
-}) => {
+}, props) => {
   const [state, setState] = useState({
     update: false,
     photo: "",
   });
+  const [userName, setUserName] = useState("");
   useEffect(() => {
     profileInfo.map((data) => {
       if (data.photoURL !== "") {
-        setState({ ...state, update: true, photo: data.photoURL });
+        setState({
+          ...state,
+          update: true,
+          photo: data.photoURL,
+        });
+      }
+      if (data.firstName === "") {
+        setUserName(data.Name);
+      }
+      if (data.firstName !== "") {
+        setUserName(data.firstName);
       }
     });
   }, [profileInfo]);
@@ -29,9 +40,9 @@ const Header = ({
   const openSideMenu = () => {
     navigation.openDrawer();
   };
-  const handleNotification =()=>{
-    navigation.navigate("Notification")
-  }
+  const handleNotification = () => {
+    navigation.navigate("Notification");
+  };
   return (
     <View style={styles.container}>
       <View style={styles.usernamedetail}>
@@ -46,7 +57,9 @@ const Header = ({
               />
             )}
           </TouchableOpacity>
-          <Text style={styles.text}>{name}</Text>
+          <Text style={styles.text}>
+            Welcome Back{"\n"} {userName}{" "}
+          </Text>
         </View>
         <View style={styles.icons}>
           {visible && (
@@ -59,8 +72,8 @@ const Header = ({
               style={{ paddingRight: 12 }}
             />
           )}
-            <TouchableOpacity onPress={handleNotification}>
-          <Ionicons  name={"ios-notifications"} size={25} color={"#000"} />
+          <TouchableOpacity onPress={handleNotification}>
+            <Ionicons name={"ios-notifications"} size={25} color={"#000"} />
           </TouchableOpacity>
         </View>
       </View>

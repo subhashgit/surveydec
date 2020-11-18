@@ -1,20 +1,27 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, StyleSheet, View, CheckBox } from "react-native";
 
-
-const CheckBoxList = ({ head, onValueChange }) => {
+const CheckBoxList = ({ head, array, setArray, label, select }) => {
+  useEffect(() => {
+    setCheck(false);
+  }, [select]);
   const [check, setCheck] = useState(false);
+  useEffect(() => {
+    if (array === []) {
+      setCheck(false);
+    }
+  }, []);
 
-  const handleCheckBox =()=>{
-    setCheck(!check)
-    onValueChange(!check)
+  const handleCheckBox = () => {
+    setCheck(!check);
 
-  }
+    array.push({ label: label, attributeState: !check });
+  };
 
   return (
     <View style={styles.checkboxList}>
       <View style={styles.checkboxContainer}>
-      <CheckBox
+        <CheckBox
           value={check}
           onValueChange={handleCheckBox}
           style={styles.checkbox}
@@ -42,6 +49,6 @@ const styles = StyleSheet.create({
   label: {
     color: "#488d4b",
     width: 70,
-    fontSize: 12
+    fontSize: 12,
   },
 });

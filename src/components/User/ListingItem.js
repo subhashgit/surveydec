@@ -7,7 +7,10 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import Rating from "../Generic/Rating";
 
 const stars = [1, 2, 3, 4, 5];
-const ListingItem = ({ data, navigation }) => {
+const ListingItem = (props) => {
+  console.log("OOOOOO", props)
+  let data = props.data;
+  let navigation = props.navigation
   const [serviceImage, setServiceImage] = useState("");
   useEffect(() => {
     console.log("imageUrl");

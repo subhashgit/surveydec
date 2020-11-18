@@ -3,7 +3,8 @@ import MapView from "react-native-maps";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 
 const Maps = ({ userLocation ,  companyName ,locationName}) => {
-  // let userLocation = userLocation.locationCords
+  console.log("useerrr", userLocation)
+  // let userLocation = userLocation.locationCords;
   const [state, setState] = useState({
     userLatitude: 0,
     userLongitude: 0,

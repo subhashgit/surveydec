@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import {  View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View } from "react-native";
 import Header from "../../components/Admin/Header";
 import CategoryList from "../../components/Admin/CategoryList";
 import { styles } from "../../styles/Admin/categoriesStyle";
@@ -9,15 +9,22 @@ import { ScrollView } from "react-native-gesture-handler";
 const Users = ({ navigation, getAdminCategory, categories }) => {
   useEffect(() => {
     getAdminCategory();
+    setNewCategories(categories);
   }, []);
+
+  const [newCatgories, setNewCategories] = useState([]);
+  useEffect(() => {
+    console.log("categoriesss", categories);
+    setNewCategories(categories);
+  }, [categories]);
 
   return (
     <View style={styles.screen}>
       <Header visible={true} navigation={navigation} name="Categories" />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.list}>
-          {categories.map((data, index) => (
-            <CategoryList key={data.id} data={data} />
+          {newCatgories.map((data, index) => (
+            <CategoryList key={data.id} data={data} navigation={navigation} />
           ))}
         </View>
       </ScrollView>

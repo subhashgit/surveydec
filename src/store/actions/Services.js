@@ -14,6 +14,12 @@ export const AddNewService = (
   let imageArray = [];
 
   if (user) {
+    dispatch({
+      type: "ADDSERVICE_LODAER",
+      payload: true,
+    });
+    
+
     const data = await db
       .collection("users")
       .get()
@@ -51,16 +57,10 @@ export const AddNewService = (
               providerName: providerName,
               averageRating: 0,
               totalReviews: 0,
-              imageUrl: "",
               imagesUrl: imageArray,
               createdAt: new Date(),
             })
-            .then((docRef) => {
-              dispatch({
-                type: "ADD_SERVICE",
-                payload: true,
-              });
-            })
+            .then((docRef) => {})
             .catch(() => {
               dispatch({
                 type: "ADD_SERVICE",
@@ -69,9 +69,18 @@ export const AddNewService = (
             });
         }
 
-        setTimeout(addService, 15000);
+        setTimeout(addService, 25000);
       })
-      .then(async () => {});
+      .then(() => {
+        dispatch({
+          type: "ADDSERVICE_LODAER",
+          payload: false,
+        });
+        dispatch({
+          type: "ADD_SERVICE",
+          payload: true,
+        });
+      });
   } else {
     console.log("user is not signed in");
   }
@@ -240,8 +249,6 @@ export const getMyServices = () => async (
           payload: services,
         });
       });
-
-  
   }
 };
 

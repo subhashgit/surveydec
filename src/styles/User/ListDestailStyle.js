@@ -69,6 +69,7 @@ export const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     paddingLeft: 20,
+    paddingBottom: 20,
     fontWeight: "bold",
   },
   location: {
@@ -111,7 +112,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
   },
   brief: {
-    fontSize: 20,
+    fontSize: 25,
     color: "#fff",
   },
   headerCategory: {
@@ -119,8 +120,13 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
   },
   close: {
-    fontSize: 20,
+    fontSize: 25,
     color: "#fff",
+  },
+  filter: {
+    fontSize: 25,
+    color: "#fff",
+    paddingRight: 10
   },
   checkboxList: {
     flexDirection: "row",

@@ -6,36 +6,21 @@ import {
   DrawerItemList,
   DrawerItem,
 } from "@react-navigation/drawer";
-import Services from "./ProviderServices";
-import Home from "./ServicesTab";
+import GuestTab from "./GuestTab";
+import Home from "./ProviderTab";
 import { Logout } from "../src/store/actions/Auth";
 import { connect } from "react-redux";
-import MyAccount from "../src/screens/Account/Account";
 import { userStatus } from "../src/store/actions/User";
-import EditImage from "../src/screens/Account/EditImage";
 import { createStackNavigator } from "@react-navigation/stack";
 import { profileInformation } from "../src/store/actions/User";
-import Notification from "../src/screens/User/Notification";
 import { FontAwesome5 } from "@expo/vector-icons";
+import AccountTab from "./AccountTab";
+import Services from '../src/screens/User/Services'
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
-const userNotificationTab = () => {
-  return (
-    <Stack.Navigator initialRouteName="Home">
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-        name="Home"
-        component={Home}
-      />
-      <Stack.Screen name="Notification" component={Notification} />
-    </Stack.Navigator>
-  );
-};
 
 const UserTabs = () => {
   return (
@@ -47,7 +32,7 @@ const UserTabs = () => {
           ),
         }}
         name="Home"
-        component={userNotificationTab}
+        component={GuestTab}
       />
     </Tab.Navigator>
   );
@@ -102,21 +87,7 @@ const CustomDrawerContent = (props) => {
     </DrawerContentScrollView>
   );
 };
-const Account = () => {
-  return (
-    <Stack.Navigator initialRouteName="MyAccount">
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-        name="MyAccount"
-        component={MyAccount}
-      />
-      <Stack.Screen name="EditImage" component={EditImage} />
-      <Stack.Screen name="Notification" component={Notification} />
-    </Stack.Navigator>
-  );
-};
+
 const UserHome = ({ Logout, status, userStatus, profileInformation }) => {
   useEffect(() => {
     profileInformation();
@@ -140,7 +111,7 @@ const UserHome = ({ Logout, status, userStatus, profileInformation }) => {
         <Drawer.Screen name="Guest" component={UserTabs} />
       )}
 
-      <Drawer.Screen name="My Account" component={Account} />
+      <Drawer.Screen name="My Account" component={AccountTab} />
     </Drawer.Navigator>
   );
 };

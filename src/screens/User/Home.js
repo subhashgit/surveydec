@@ -7,14 +7,23 @@ import ListingItem from "../../components/User/ListingItem";
 import { connect } from "react-redux";
 import { getServices } from "../../store/actions/Services";
 
-const Home = ({ navigation, getServices, services }) => {
+const Home = (props) => {
+  const [visible, setVisible] = useState(false);
+  let navigation = props.navigation;
+  let getServices = props.getServices;
+  let services = props.services;
   useEffect(() => {
     getServices();
+    setVisible(props.route.params.visible);
   }, []);
+  useEffect(() => {
+
+    setVisible(props.route.params.visible);
+  }, [props.route.params.visible]);
 
   return (
     <View style={styles.screen}>
-      <Header navigation={navigation} name="Services" visible={true} />
+      <Header navigation={navigation} name="Services" visible={visible} />
       <View style={styles.list}>
         <Animated.ScrollView showsVerticalScrollIndicator={false}>
           {services.map((data) => (
