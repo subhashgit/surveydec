@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { StyleSheet} from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import {
   createDrawerNavigator,
@@ -6,58 +7,71 @@ import {
   DrawerItemList,
   DrawerItem,
 } from "@react-navigation/drawer";
-import GuestTab from "./GuestTab";
-import Home from "./ProviderTab";
+import Services from "./ProviderServices";
+import Home from "./ServicesTab";
 import { Logout } from "../src/store/actions/Auth";
 import { connect } from "react-redux";
+import MyAccount from "../src/screens/Account/Account";
 import { userStatus } from "../src/store/actions/User";
+import EditImage from "../src/screens/Account/EditImage";
 import { createStackNavigator } from "@react-navigation/stack";
 import { profileInformation } from "../src/store/actions/User";
-import { FontAwesome5 } from "@expo/vector-icons";
-import AccountTab from "./AccountTab";
-import Services from '../src/screens/User/Services'
+import Notification from "../src/screens/User/Notification";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 
+const userNotificationTab = () => {
+  return (
+    <Stack.Navigator initialRouteName="Home">
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="Home"
+        component={Home}
+      />
+      <Stack.Screen name="Notification" component={Notification} />
+      <Stack.Screen options={{
+          headerShown: false,
+        }}
+         name="MyAccount" component={MyAccount} />
+    </Stack.Navigator>
+  );
+};
 
 const UserTabs = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="home" color="#000" size={20} />
+    <Tab.Navigator  tabBarOptions={{
+
+        inactiveTintColor:"#000",
+        activeTintColor: '#666',
+      }}>
+      <Tab.Screen name="Home" component={userNotificationTab} options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="home"    color={color} size={size} />
           ),
-        }}
-        name="Home"
-        component={GuestTab}
-      />
+        }} />
+        <Tab.Screen name="Services"  component={Services}
+         options={{
+         tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="briefcase" color={color} size={size} />
+          ),
+        }} />
+
     </Tab.Navigator>
   );
 };
 const ProviderTabs = () => {
   return (
     <Tab.Navigator>
-      <Tab.Screen
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="home" color="#000" size={20} />
-          ),
-        }}
-        name="Home"
-        component={Home}
-      />
-      <Tab.Screen
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="briefcase" color="#000" size={20} />
-          ),
-        }}
-        name="Services "
-        component={Services}
-      />
+      <Tab.Screen name="Home" component={Home} />
+      <Tab.Screen name="Services"  component={Services} />
+      
+      
     </Tab.Navigator>
   );
 };
@@ -87,7 +101,20 @@ const CustomDrawerContent = (props) => {
     </DrawerContentScrollView>
   );
 };
-
+const Account = () => {
+  return (
+    <Stack.Navigator initialRouteName="MyAccount">
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="MyAccount"
+        component={MyAccount}
+      />
+      <Stack.Screen name="EditImage" component={EditImage} />
+    </Stack.Navigator>
+  );
+};
 const UserHome = ({ Logout, status, userStatus, profileInformation }) => {
   useEffect(() => {
     profileInformation();
@@ -111,7 +138,7 @@ const UserHome = ({ Logout, status, userStatus, profileInformation }) => {
         <Drawer.Screen name="Guest" component={UserTabs} />
       )}
 
-      <Drawer.Screen name="My Account" component={AccountTab} />
+      <Drawer.Screen name="My Account" component={Account} />
     </Drawer.Navigator>
   );
 };
@@ -125,3 +152,6 @@ export default connect(mapStateToProps, {
   userStatus,
   profileInformation,
 })(UserHome);
+const styles = StyleSheet.create({
+  freak:{color:'#000'}
+})

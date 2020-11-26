@@ -10,11 +10,8 @@ import {
 import Header from "../../components/User/Header";
 import { styles } from "../../styles/Account/AccountStyle";
 import Input from "../../components/Generic/AccountInput";
-import { FontAwesome5, AntDesign } from "react-native-vector-icons";
-import {
-  profileInformation,
-  updateInformation,
-} from "../../store/actions/User";
+import { FontAwesome5, AntDesign, Entypo, MaterialIcons } from "react-native-vector-icons";
+import {  profileInformation, updateInformation,} from "../../store/actions/User";
 import { connect } from "react-redux";
 
 const Account = ({
@@ -65,7 +62,15 @@ const Account = ({
   return (
     <ScrollView style={styles.screen}>
       <View>
-        <Header navigation={navigation} visible={false} name="My Accounnt" />
+
+        <View style={styles.topfunacc}>
+             <TouchableOpacity
+               onPress={() => navigation.goBack()}> 
+                <Text>  <MaterialIcons  name="arrow-back"  size={25}/></Text>
+    </TouchableOpacity>
+            <Text>Save & Exit</Text>
+        </View>
+
         <View style={styles.content}>
           <View>
             <TouchableOpacity style={styles.imageComponent}>
@@ -179,6 +184,8 @@ const Account = ({
             }}
           />
           <Text style={styles.heading}>Website and Account Details</Text>
+          <View style={styles.textwrap}>
+          <Entypo name="globe"   style={styles.texticon}/>
           <Input
             head="Website"
             defaultValue={profile.websiteUrl}
@@ -189,6 +196,9 @@ const Account = ({
               setState({ ...state, websiteUrl: text });
             }}
           />
+          </View>
+          <View style={styles.textwrap}>
+          <Entypo name="facebook"   style={styles.texticon}/>
           <Input
             head="Facebook"
             defaultValue={profile.facebookUrl}
@@ -199,6 +209,9 @@ const Account = ({
               setState({ ...state, facebookUrl: text });
             }}
           />
+          </View>
+          <View style={styles.textwrap}>
+          <AntDesign name="instagram"   style={styles.texticon}/>
           <Input
             head="Instagram"
             defaultValue={profile.instagramUrl}
@@ -209,6 +222,7 @@ const Account = ({
               setState({ ...state, instagramUrl: text });
             }}
           />
+          </View>
         </View>
       </View>
     </ScrollView>

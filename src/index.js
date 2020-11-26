@@ -20,7 +20,6 @@ const Drawer = createDrawerNavigator();
 const index = ({ userState, verifyUser, loading }) => {
   const [isSignedIn, setSignedIn] = useState(false);
   useEffect(() => {
-    console.log("loading", loading)
     verifyUser();
   }, []);
   useEffect(() => {
@@ -28,13 +27,11 @@ const index = ({ userState, verifyUser, loading }) => {
   }, [userState]);
   return (
     <>
-      {loading ? (
-        <Loader />
-      ) : (
+
         <NavigationContainer>
           {isSignedIn ? <Authority /> : <AuthTab />}
         </NavigationContainer>
-      )}
+
     </>
   );
 };

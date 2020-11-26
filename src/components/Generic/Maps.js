@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   mapStyle: {
-    width: 320,
-    height: 400,
+    width: '100%',
+    height: 200,
   },
 });
