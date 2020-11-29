@@ -30,6 +30,8 @@ import Avatar from "../../../assets/images/user1.jpeg";
 import Maps from "../../components/Generic/Maps";
 import Loader from "../../screens/Auth/Loader";
 import Carousel from "react-native-snap-carousel";
+import { LinearGradient } from 'expo-linear-gradient';
+
 import { styles } from "../../styles/User/ListDestailStyle"
 const { width } = Dimensions.get("window");
 const ListDetail = ({ ...props }) => {
@@ -88,6 +90,7 @@ const [modalVisible, setModalVisible] = useState(false);
 
   const handleReview = () => {
     addServiceReview(Review, data.id);
+     setModalVisible(!modalVisible);
   };
   const [loader, setLoader] = useState(false);
   useEffect(() => {
@@ -105,7 +108,19 @@ const [modalVisible, setModalVisible] = useState(false);
     return (
     	<>
       <ImageBackground source={{ uri: item }} style={styles.image}></ImageBackground>
-     
+ <LinearGradient
+        // Background Linear Gradient
+        colors={['rgba(0,0,0,0.8)', 'transparent']}
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: 0,
+          height: 300,
+        }}
+      />
+             
+
       </>
     );
   };
@@ -175,6 +190,7 @@ const [modalVisible, setModalVisible] = useState(false);
                   }}
                 >
                   <Image style={{ width: 20, height: 20 }} source={tick} />
+
                   <Text
                     style={{
                       color: "#282828",
@@ -264,6 +280,14 @@ const [modalVisible, setModalVisible] = useState(false);
                             {data.totalRating}
                           </Text>
                         </View>
+                        <View
+  style={{
+    borderBottomColor: '#979797',
+    borderBottomWidth: 1,
+    marginTop:10,
+  }}
+/>
+                        
                                   { /* <Text
                                     style={{
                                       paddingTop: 20,
@@ -287,10 +311,15 @@ const [modalVisible, setModalVisible] = useState(false);
 
 
             <Modal
-              animationType="slide"
+              animationType="fade"
               transparent={true}
               visible={modalVisible} >
                <View style={styles.centeredView}>
+                
+
+
+
+
           <View style={styles.modalView}>
          
              <TouchableHighlight

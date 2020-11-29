@@ -7,7 +7,7 @@ import { Text } from "native-base";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { connect } from "react-redux";
 import { getServices } from "../../store/actions/Services";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const items = [ 
   {
@@ -73,16 +73,18 @@ const Services = ({ navigation, getServices, services }) => {
            <View style={styles.milesdata}>   
              <Text style={styles.milesdatatxt}> Suggested Servey pro's in your area </Text>
               <View style={styles.milesdatain}>
-               <FontAwesome
-              style={{fontSize: 20, paddingTop: 10 }}
-              name='sliders'
-            /> 
+               <MaterialCommunityIcons
+                   style={{fontSize: 22, paddingTop: 10 }}
+                  name="filter-variant"
+                />
+
+
           <Text style={styles.milesdatatxtmi}> 2  Mile
           </Text>
                   
               </View>
           </View>
-          <ScrollView showsHorizontalScrollIndicator={false}  horizontal={true}>
+          <ScrollView showsHorizontalScrollIndicator={false}   horizontal={true}>
              
           {services.map((data) => (
             <ListingItem key={data.id} data={data} navigation={navigation} />
@@ -143,7 +145,7 @@ const styles = StyleSheet.create({
    
     paddingTop: 35,
 
-    height: 380,
+   
     marginBottom:0
   },
   header:{paddingLeft:15,paddingRight:15},

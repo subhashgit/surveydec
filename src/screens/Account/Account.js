@@ -25,6 +25,7 @@ const Account = ({
     navigation.navigate("EditImage");
   };
 
+
   useEffect(() => {
     profileInformation();
     profileInfo.map((data) => {
@@ -43,12 +44,36 @@ const Account = ({
     Email: profile.Email,
     PhoneNumber: profile.PhoneNumber,
     websiteUrl: profile.websiteUrl,
-    facebookUrl: profile.websiteUrl,
+    facebookUrl: profile.facebookUrl,
     instagramUrl: profile.instagramUrl,
     userId: profile.id,
   });
   const handleAccountInfo = () => {
+//alert(state.about);
+    if(state.about == '') 
+   { alert( 'Please fill about yourself' );    return false; }
+
+    else if(state.userType == '' )      
+   {      alert( 'Please fill user type' );    return false; }
+     else   if(state.firstName == '') 
+   {      alert( 'Please fill first name' );    return false;  }
+       else if(state.lastName == '') 
+   {      alert( 'Please fill last name' );    return false;}
+       else if(state.Email == '') 
+   {  alert( 'Please fill email' );    return false; }
+     else  if(state.PhoneNumber == '' ) 
+   {  alert( 'Please fill phone number' );    return false; }
+     else if(state.websiteUrl == '' )        
+   { alert( 'Please fill website Url' ); return false; }
+       else if(state.facebookUrl == '' ) 
+   {  alert( 'Please fill facebook link' );    return false; }
+       else if(state.instagramUrl == '') 
+   {      alert( 'Please fill instagram link' );    return false; }
+    
+ else{ 
     updateInformation(state);
+   navigation.navigate("Home");
+ }
   };
   const [imageUrl, setImageUrl] = useState("");
   useEffect(() => {
@@ -68,7 +93,10 @@ const Account = ({
                onPress={() => navigation.goBack()}> 
                 <Text>  <MaterialIcons  name="arrow-back"  size={25}/></Text>
     </TouchableOpacity>
-            <Text>Save & Exit</Text>
+    <TouchableOpacity
+               onPress={handleAccountInfo}> 
+                   <Text>Save & Exit</Text>
+              </TouchableOpacity>
         </View>
 
         <View style={styles.content}>
@@ -98,7 +126,8 @@ const Account = ({
             </TouchableOpacity>
             <Text style={styles.text}>{profile.Name}</Text>
           </View>
-          {Edit ? (
+         
+         {/* {Edit ? (
             <TouchableOpacity
               onPress={handleAccountInfo}
               style={{
@@ -112,11 +141,10 @@ const Account = ({
             </TouchableOpacity>
           ) : (
             <Text></Text>
-          )}
+          )} */}
         </View>
         <View style={styles.info}>
-          <Text style={styles.heading}>Profile details</Text>
-          <View style={styles.inputContainer}>
+         <View style={styles.inputContainer}>
             <Text style={styles.name}>About Yourself</Text>
             <TextInput
               paddingVertical={0}
@@ -125,7 +153,7 @@ const Account = ({
               numberOfLines={20}
               defaultValue={profile.about}
               maxLength={300}
-              placeholder=""
+              placeholder="Give your clients a short bio about yourself, and the service you offer?  Tell them what do you like about your service, and remember honesty goes a long way in the online world 💫"
               style={styles.input}
               onChangeText={(text) => {
                 setEdit(true);
@@ -133,6 +161,8 @@ const Account = ({
               }}
             />
           </View>
+          <Text style={styles.heading}>Profile details</Text>
+         
           <Input
             head="User Type"
             editable={true}

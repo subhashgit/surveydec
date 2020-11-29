@@ -160,12 +160,16 @@ export const styles = StyleSheet.create({
 
    centeredView: {
     position:'absolute',
+    height:'100%',
     bottom:0,
     width:'100%',
-    borderTopWidth:2,
-    borderColor:'#efefef'
+    backgroundColor:'rgba(0,0,0,.5)',
   },
   modalView: {
+        position:'absolute',
+
+    bottom:0,
+
         width:'100%',
     margin: 0,
     backgroundColor: "white",
