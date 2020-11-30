@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { styles } from "../../styles/Admin/headerStyle";
 import { connect } from "react-redux";
 
-const Header = ({ name, navigation, visible, profileInfo }) => {
+const Header = ({ name, navigation, visible , profileInfo}) => {
   const [state, setState] = useState({
     update: false,
     photo: "",
@@ -19,18 +19,18 @@ const Header = ({ name, navigation, visible, profileInfo }) => {
     navigation.openDrawer();
   };
   const handleCategory = () => {
-    navigation.navigate("AddCategory", {
-      data: null,
-      key: 1,
-    });
+    navigation.navigate("AddCategory");
   };
   return (
     <View style={styles.container}>
       <View style={styles.usernamedetail}>
         <View style={styles.userNameDetails}>
           <TouchableOpacity>
-            {state.photo !== "" ? (
-              <Image style={styles.image} source={{ uri: state.photo }} />
+            {state.photo !== '' ? (
+              <Image
+                style={styles.image}
+                source={{uri: state.photo}}
+              />
             ) : (
               <Image
                 style={styles.image}

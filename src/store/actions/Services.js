@@ -6,20 +6,19 @@ export const AddNewService = (
 ) => async (dispatch, getState, { getFirestore, getFirebase }) => {
   const db = getFirestore();
   const firebase = getFirebase();
+  let attribute = [];
   let providerName;
   var user = await firebase.auth().currentUser;
   let serviceName = service.serviceName;
   let category = service.category;
   let location = service.location;
+  let maps = service.maps;
   let imageArray = [];
+  // let image = service.image;
+
+  // console.log("attributeee", attribute);
 
   if (user) {
-    dispatch({
-      type: "ADDSERVICE_LODAER",
-      payload: true,
-    });
-    
-
     const data = await db
       .collection("users")
       .get()
@@ -33,7 +32,9 @@ export const AddNewService = (
       .then(() => {
         images.forEach(async (serviceImage) => {
           const ImageResponse = await fetch(serviceImage);
+          // console.log("resss", res);
           const blob = await ImageResponse.blob();
+          const imageUrl = "";
 
           var ref = firebase.storage().ref().child(`images/${serviceImage}`);
 
@@ -57,10 +58,16 @@ export const AddNewService = (
               providerName: providerName,
               averageRating: 0,
               totalReviews: 0,
+              imageUrl: "",
               imagesUrl: imageArray,
               createdAt: new Date(),
             })
-            .then((docRef) => {})
+            .then((docRef) => {
+              dispatch({
+                type: "ADD_SERVICE",
+                payload: true,
+              });
+            })
             .catch(() => {
               dispatch({
                 type: "ADD_SERVICE",
@@ -69,18 +76,9 @@ export const AddNewService = (
             });
         }
 
-        setTimeout(addService, 25000);
+        setTimeout(addService, 15000);
       })
-      .then(() => {
-        dispatch({
-          type: "ADDSERVICE_LODAER",
-          payload: false,
-        });
-        dispatch({
-          type: "ADD_SERVICE",
-          payload: true,
-        });
-      });
+      .then(async () => {});
   } else {
     console.log("user is not signed in");
   }
@@ -221,45 +219,3 @@ export const getServiceReview = (id) => async (
     });
 };
 
-export const getMyServices = () => async (
-  dispatch,
-  getState,
-  { getFirestore, getFirebase }
-) => {
-  const db = getFirestore();
-  const firebase = getFirebase();
-  var user = await firebase.auth().currentUser;
-  let services = [];
-
-  if (user) {
-    const res = await db
-      .collection("services")
-      .where("approve", "==", true)
-      .get()
-      .then((response) => {
-        response.docs.forEach((userData) => {
-          if (user.uid == userData.data().userId) {
-            services.push({ ...userData.data(), id: userData.id });
-          }
-        });
-      })
-      .then(() => {
-        dispatch({
-          type: "MY_SERVICES",
-          payload: services,
-        });
-      });
-  }
-};
-
-// .then((response) => {
-//   response.docs.forEach((item, index) => {
-//     console.log("item a daaraa", item.data())
-//     services.push({ ...item.data(), id: item.id });
-//   });
-//   console.log("servicessss", services);
-//   dispatch({
-//     type: "MY_SERVICES",
-//     payload: services,
-//   });
-// });

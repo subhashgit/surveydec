@@ -86,6 +86,7 @@ export const verifyUser = () => async (
     payload: true,
   });
   await firebase.auth().onAuthStateChanged(function (user) {
+
     if (user) {
       dispatch({
         type: "SIGNIN_SUCCESS",
@@ -104,12 +105,8 @@ export const verifyUser = () => async (
         type: "SIGNIN_SUCCESS",
         payload: false,
       });
-      dispatch({
-        type: "LOADING",
-        payload: false,
-      });
     }
-  });
+  })
 };
 export const Logout = () => async (
   dispatch,

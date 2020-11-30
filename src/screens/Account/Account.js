@@ -10,11 +10,8 @@ import {
 import Header from "../../components/User/Header";
 import { styles } from "../../styles/Account/AccountStyle";
 import Input from "../../components/Generic/AccountInput";
-import { FontAwesome5, AntDesign } from "react-native-vector-icons";
-import {
-  profileInformation,
-  updateInformation,
-} from "../../store/actions/User";
+import { FontAwesome5, AntDesign, Entypo, MaterialIcons } from "react-native-vector-icons";
+import {  profileInformation, updateInformation,} from "../../store/actions/User";
 import { connect } from "react-redux";
 
 const Account = ({
@@ -27,6 +24,7 @@ const Account = ({
   const handleNavigation = () => {
     navigation.navigate("EditImage");
   };
+
 
   useEffect(() => {
     profileInformation();
@@ -46,12 +44,36 @@ const Account = ({
     Email: profile.Email,
     PhoneNumber: profile.PhoneNumber,
     websiteUrl: profile.websiteUrl,
-    facebookUrl: profile.websiteUrl,
+    facebookUrl: profile.facebookUrl,
     instagramUrl: profile.instagramUrl,
     userId: profile.id,
   });
   const handleAccountInfo = () => {
+//alert(state.about);
+    if(state.about == '') 
+   { alert( 'Please fill about yourself' );    return false; }
+
+    else if(state.userType == '' )      
+   {      alert( 'Please fill user type' );    return false; }
+     else   if(state.firstName == '') 
+   {      alert( 'Please fill first name' );    return false;  }
+       else if(state.lastName == '') 
+   {      alert( 'Please fill last name' );    return false;}
+       else if(state.Email == '') 
+   {  alert( 'Please fill email' );    return false; }
+     else  if(state.PhoneNumber == '' ) 
+   {  alert( 'Please fill phone number' );    return false; }
+     else if(state.websiteUrl == '' )        
+   { alert( 'Please fill website Url' ); return false; }
+       else if(state.facebookUrl == '' ) 
+   {  alert( 'Please fill facebook link' );    return false; }
+       else if(state.instagramUrl == '') 
+   {      alert( 'Please fill instagram link' );    return false; }
+    
+ else{ 
     updateInformation(state);
+   navigation.navigate("Home");
+ }
   };
   const [imageUrl, setImageUrl] = useState("");
   useEffect(() => {
@@ -65,7 +87,18 @@ const Account = ({
   return (
     <ScrollView style={styles.screen}>
       <View>
-        <Header navigation={navigation} visible={false} name="My Accounnt" />
+
+        <View style={styles.topfunacc}>
+             <TouchableOpacity
+               onPress={() => navigation.goBack()}> 
+                <Text>  <MaterialIcons  name="arrow-back"  size={25}/></Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+               onPress={handleAccountInfo}> 
+                   <Text>Save & Exit</Text>
+              </TouchableOpacity>
+        </View>
+
         <View style={styles.content}>
           <View>
             <TouchableOpacity style={styles.imageComponent}>
@@ -93,7 +126,8 @@ const Account = ({
             </TouchableOpacity>
             <Text style={styles.text}>{profile.Name}</Text>
           </View>
-          {Edit ? (
+         
+         {/* {Edit ? (
             <TouchableOpacity
               onPress={handleAccountInfo}
               style={{
@@ -107,11 +141,10 @@ const Account = ({
             </TouchableOpacity>
           ) : (
             <Text></Text>
-          )}
+          )} */}
         </View>
         <View style={styles.info}>
-          <Text style={styles.heading}>Profile details</Text>
-          <View style={styles.inputContainer}>
+         <View style={styles.inputContainer}>
             <Text style={styles.name}>About Yourself</Text>
             <TextInput
               paddingVertical={0}
@@ -120,7 +153,7 @@ const Account = ({
               numberOfLines={20}
               defaultValue={profile.about}
               maxLength={300}
-              placeholder=""
+              placeholder="Give your clients a short bio about yourself, and the service you offer?  Tell them what do you like about your service, and remember honesty goes a long way in the online world 💫"
               style={styles.input}
               onChangeText={(text) => {
                 setEdit(true);
@@ -128,6 +161,8 @@ const Account = ({
               }}
             />
           </View>
+          <Text style={styles.heading}>Profile details</Text>
+         
           <Input
             head="User Type"
             editable={true}
@@ -179,6 +214,8 @@ const Account = ({
             }}
           />
           <Text style={styles.heading}>Website and Account Details</Text>
+          <View style={styles.textwrap}>
+          <Entypo name="globe"   style={styles.texticon}/>
           <Input
             head="Website"
             defaultValue={profile.websiteUrl}
@@ -189,6 +226,9 @@ const Account = ({
               setState({ ...state, websiteUrl: text });
             }}
           />
+          </View>
+          <View style={styles.textwrap}>
+          <Entypo name="facebook"   style={styles.texticon}/>
           <Input
             head="Facebook"
             defaultValue={profile.facebookUrl}
@@ -199,6 +239,9 @@ const Account = ({
               setState({ ...state, facebookUrl: text });
             }}
           />
+          </View>
+          <View style={styles.textwrap}>
+          <AntDesign name="instagram"   style={styles.texticon}/>
           <Input
             head="Instagram"
             defaultValue={profile.instagramUrl}
@@ -209,6 +252,7 @@ const Account = ({
               setState({ ...state, instagramUrl: text });
             }}
           />
+          </View>
         </View>
       </View>
     </ScrollView>
