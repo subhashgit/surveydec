@@ -8,12 +8,10 @@ import Rating from "../Generic/Rating";
 
 const stars = [1, 2, 3, 4, 5];
 const ListingItem = (props) => {
-  console.log("OOOOOO", props)
   let data = props.data;
   let navigation = props.navigation
   const [serviceImage, setServiceImage] = useState("");
   useEffect(() => {
-    console.log("imageUrl");
     if(data.imagesUrl !== []){
       data.imagesUrl.map((currentImage) => {
         setServiceImage(currentImage);
@@ -27,7 +25,6 @@ const ListingItem = (props) => {
     <TouchableOpacity
       activeOpacity={0.8}
       onPress={() => {
-        console.log("csdasdas");
         navigation.navigate("ListDetail", {
           data: data,
           key: data,
