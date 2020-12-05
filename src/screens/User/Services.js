@@ -3,21 +3,26 @@ import { StyleSheet, View, Animated } from "react-native";
 import Header from "../../components/User/Header";
 import ListingItem from "../../components/User/ListingItem";
 import { Text } from "native-base";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { connect } from "react-redux";
-import { getMyServices } from "../../store/actions/Services";
+import { getServices } from "../../store/actions/Services";
 
-const Services = ({ navigation, getMyServices, services }) => {
+const Services = ({ ...props }) => {
+  let navigation = props.navigation;
+  let getServices = props.getServices;
+  let services = props.services;
   useEffect(() => {
-    getMyServices();
+    getServices();
   }, []);
+  useEffect(() => {
+    console.log("Propssss", props.route);
+  }, [props]);
+
   return (
     <View style={styles.screen}>
       <Header name="Services" navigation={navigation} visible={true} />
       <View style={styles.list}>
         <Animated.ScrollView showsVerticalScrollIndicator={false}>
-          <Text style={{ paddingBottom: 5, fontSize: 13, color: "#a9a9a9" }}>
-            Active Services
-          </Text>
           {services.map((data) => (
             <ListingItem key={data.id} data={data} navigation={navigation} />
           ))}
@@ -28,17 +33,16 @@ const Services = ({ navigation, getMyServices, services }) => {
 };
 const mapStateToProps = (state) => {
   return {
-    services: state.Service.myServices,
+    services: state.Service.services,
   };
 };
-export default connect(mapStateToProps, { getMyServices })(Services);
+export default connect(mapStateToProps, { getServices })(Services);
 
 const styles = StyleSheet.create({
   screen: {
     backgroundColor: "#f7f7f7",
-    padding: 20,
-    paddingTop: 40,
-    height: 670,
+    padding: 15,
+    paddingTop: 35,
   },
   list: {
     paddingTop: 20,

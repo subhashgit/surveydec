@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { styles } from "../../styles/User/AddServiceStyle";
 import { Picker } from "@react-native-community/picker";
@@ -10,41 +10,63 @@ const CategoryPicker = ({
   state,
   categories,
   setSelect,
+  setVisible,
+  stateChange,
 }) => {
+  const [selectCategory, setSelectCateory] = useState("");
+
+  useEffect(() => {
+    setSelectCateory(selectedValue);
+    console.log("selected value", selectedValue.label);
+  }, [selectedValue]);
+
   return (
     <View style={styles.picker}>
       <Picker
         style={{ flex: 1, zIndex: 2 }}
-        selectedValue={selectedValue}
+        selectedValue={
+          selectedValue.value !== "other" ? selectedValue : "other"
+        }
         onValueChange={(itemValue, itemIndex) => {
-          setSelectedValue(itemValue);
-          setState({
-            ...state,
-            category: itemValue.label,
-          });
-          setSelect(true);
+          console.log("Item value", itemValue);
+          if (stateChange === false) {
+            if (itemValue !== "other") {
+              setSelectedValue(itemValue);
+              setState({
+                ...state,
+                category: itemValue.label,
+              });
+              setSelect(true);
+              setVisible(false);
+            }
+            if (itemValue === "other") {
+              setSelectedValue({
+                ...selectedValue,
+                value: "other",
+                features: [],
+              });
+              setSelect(true);
+              setVisible(true);
+            }
+          }
         }}
         mode="dropdown"
       >
-        <Picker.Item label="Select Category" value="0" />
+        {stateChange ? (
+          <Picker.Item label={selectedValue.label} key={0} value="0" />
+        ) : (
+          <Picker.Item label="Select Category" key={0} value="0" />
+        )}
         {categories != null ? (
           categories.map((data, index) => (
-            <Picker.Item
-              style={{ backgroundColor: "blue", padding: 20, flex: 1 }}
-              label={data.label}
-              key={index}
-              value={data}
-            />
+            <Picker.Item label={data.label} key={index + 1} value={data} />
           ))
         ) : (
           <Picker />
         )}
+        <Picker.Item label="Other..." key="other" value="other" />
       </Picker>
     </View>
   );
 };
-const mapStateToProps = (state) => {
-  return {};
-};
 export default CategoryPicker;
-

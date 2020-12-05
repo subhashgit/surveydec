@@ -3,43 +3,31 @@ import { StyleSheet, Image, Text } from "react-native";
 import {
   Container,
   Content,
-  Form,
-  Item,
-  Input,
-  Label,
   Button,
-  View,
 } from "native-base";
-import icon from '../../../assets/icon.png'
-import {connect} from 'react-redux'
-import {Logout} from '../../store/actions/Auth'
-const  Conformaion =({Logout})=> {
-
-  const handleSignout =() =>{
-    Logout()
-  }
+import icon from "../../../assets/icon.png";
+import { connect } from "react-redux";
+import { Logout } from "../../store/actions/Auth";
+const Conformaion = ({ Logout }) => {
+  const handleSignout = () => {
+    Logout();
+  };
   return (
     <Container style={styles.wrapper}>
       <Content style={styles.container}>
         <Image style={styles.imtxc} source={icon} />
-        <Text style={styles.header}>
-         Congrates!
-        </Text>
-        <Text style={styles.loginsizetxt}>
-        Welcome
-        </Text>
+        <Text style={styles.header}>Congrates!</Text>
+        <Text style={styles.loginsizetxt}>Welcome</Text>
         <Button onPress={handleSignout} full success style={styles.buttons}>
-            <Text style={styles.buttonstxt}>Signout</Text>
-          </Button>
+          <Text style={styles.buttonstxt}>Signout</Text>
+        </Button>
       </Content>
     </Container>
   );
-}
-const mapStateToProps =()=>{
+};
+const mapStateToProps = () => {};
 
-}
-
-export default connect(mapStateToProps ,{Logout} ) (Conformaion)
+export default connect(mapStateToProps, { Logout })(Conformaion);
 const styles = StyleSheet.create({
   container: {
     marginTop: 50,
@@ -50,7 +38,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     alignSelf: "center",
     width: 90,
-    height: 90
+    height: 90,
   },
   header: {
     fontSize: 30,
@@ -62,7 +50,7 @@ const styles = StyleSheet.create({
     paddingTop: 50,
     fontSize: 22,
     textAlign: "center",
-    color: "#000"
+    color: "#000",
   },
   buttons: { color: "#fff", marginTop: 250 },
   inputtexts: { paddingBottom: 10 },

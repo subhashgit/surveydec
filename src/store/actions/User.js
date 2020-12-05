@@ -1,14 +1,7 @@
 export const userStatus = (state) => async (dispatch) => {
-  let user = false;
-  if (state) {
-    user = state;
-  } else {
-    user = false;
-  }
-  console.log("userrrr", user);
   dispatch({
     type: "USER_STATUS",
-    payload: user,
+    payload: state,
   });
 };
 export const profileInformation = () => async (
@@ -64,8 +57,8 @@ export const updateInformation = (information) => async (
   let userId = information.userId;
 
   if (user) {
-    const accountRef =await db.collection("users").doc(user.uid)
-       accountRef
+    const accountRef = await db.collection("users").doc(user.uid);
+    accountRef
       .update({
         Email: Email,
         about: about,
@@ -77,12 +70,12 @@ export const updateInformation = (information) => async (
         facebookUrl: facebookUrl,
         userType: userType,
       })
-      .then(()=>{
-        console.log("sucessss")
+      .then(() => {
+        console.log("sucessss");
         dispatch({
           type: "ACCOUNT_ADDED_INFO",
           payload: true,
-        })
+        });
       });
   } else {
     console.log("user not signed in");

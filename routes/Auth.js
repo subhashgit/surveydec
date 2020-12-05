@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Login from '../src/screens/Auth/LogIn'
-import Signup from '../src/screens/Auth/SignUp'
+import Login from "../src/screens/Auth/LogIn";
+import Signup from "../src/screens/Auth/SignUp";
 
 const Stack = createStackNavigator();
 
@@ -15,10 +15,7 @@ const AuthTab = () => {
         name="login"
         component={Login}
       />
-      <Stack.Screen
-        name="signup"
-        component={Signup}
-      />
+      <Stack.Screen name="signup" component={Signup} />
     </Stack.Navigator>
   );
 };

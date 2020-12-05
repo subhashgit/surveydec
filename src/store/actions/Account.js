@@ -23,9 +23,6 @@ export const UploadProfileImage = (image) => async (
           });
         });
       })
-      .then(() => {
-        console.log("sucesss");
-      });
   } else {
   }
 };

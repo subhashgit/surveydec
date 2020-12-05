@@ -1,13 +1,12 @@
 const initialState = {
   serviceMessage: false,
+  serviceLoading: false,
   services: [],
   categoryFeatures: [],
   serviceProviderInfo: [],
   reviewsList: [],
   userReviewInfo: [],
   loader: false,
-  myServices: [],
-  loading: false
 };
 
 export default function ServiceReducer(state = initialState, action) {
@@ -17,16 +16,16 @@ export default function ServiceReducer(state = initialState, action) {
         ...state,
         serviceMessage: action.payload,
       };
+    case "SERVICE_LOADING":
+      return {
+        ...state,
+        serviceMessage: action.payload,
+      };
     case "SERVICES":
       return {
         ...state,
         services: action.payload,
       };
-    case "MY_SERVICES":
-        return {
-          ...state,
-          myServices: action.payload,
-        };  
     case "CATEGORY_FEATURES":
       return {
         ...state,
@@ -43,20 +42,15 @@ export default function ServiceReducer(state = initialState, action) {
         reviewsList: action.payload,
       };
     case "USER_REVIEW_INFO":
-        return {
-          ...state,
-          userReviewInfo: action.payload,
-        };
+      return {
+        ...state,
+        userReviewInfo: action.payload,
+      };
     case "LOADER":
-        return {
-          ...state,
-          loader: action.payload,
-        };  
-    case "ADDSERVICE_LODAER":
-    return  {
-      ...state,
-      loading: action.payload
-    }     
+      return {
+        ...state,
+        loader: action.payload,
+      };
 
     default:
       return state;

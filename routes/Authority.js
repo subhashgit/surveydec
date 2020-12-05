@@ -4,27 +4,19 @@ import UserHome from "./UserHome";
 import Admin from "./Admin";
 import Loader from "../src/screens/Auth/Loader";
 import { connect } from "react-redux";
-import { verifyUser, Authorization } from "../src/store/actions/Auth";
-import {    profileInformation} from '../src/store/actions/User'
+import { Authorization } from "../src/store/actions/Auth";
+import { profileInformation } from "../src/store/actions/User";
 
 const Stack = createStackNavigator();
 
 const Authority = ({ type, Authorization, authCheck, profileInformation }) => {
-  const [check, setCheck] = useState(false);
-  const [authType, setAuthType] = useState({
-    value: "",
-    bool: false,
-  });
   useEffect(() => {
     Authorization();
-   
   }, []);
 
   useEffect(() => {
-    setCheck(authCheck);
-    profileInformation()
+    profileInformation();
   }, [authCheck]);
-  useEffect(() => {}, [type]);
 
   return (
     <>
@@ -66,4 +58,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { Authorization, profileInformation })(Authority);
+export default connect(mapStateToProps, { Authorization, profileInformation })(
+  Authority
+);

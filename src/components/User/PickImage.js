@@ -25,7 +25,6 @@ const getImage = ({ images }) => {
       aspect: [4, 5],
       multiple: true,
     });
-    console.log("resulytt", result);
     if (!result.cancelled) {
       setImageState(false);
       images.push(result.uri);

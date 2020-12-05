@@ -11,7 +11,6 @@ const CategoryList = ({ data, navigation }) => {
   };
   const [state, setState] = useState(data);
   useEffect(() => {
-    console.log("dataaa", data);
     setState(data);
   }, [data]);
   return (
@@ -27,7 +26,7 @@ const CategoryList = ({ data, navigation }) => {
             left={(props) => <List.Icon {...props} icon="hand" />}
             right={(props) => <List.Icon {...props} icon="hand" />}
             description={state.features.map((i) => `${i.label}  `)}
-            title={state.value}
+            title={state.label}
             id={state.id}
             expanded={expanded}
             onPress={handlePress}

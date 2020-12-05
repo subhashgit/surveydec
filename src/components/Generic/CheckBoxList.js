@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Text, Image, StyleSheet, View, CheckBox } from "react-native";
-import { Ionicons, Entypo } from "@expo/vector-icons";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Text, Image, StyleSheet, View } from "react-native";
+import CheckBox from "@react-native-community/checkbox";
 
-const CheckBoxList = ({
-  text,
-  value,
-  checkboxPicker,
-  index,
-}) => {
+const CheckBoxList = ({ text, value, checkboxPicker, index }) => {
   const [check, setCheck] = useState(false);
   const [checkBoxText, setCheckBoxText] = useState("");
 
@@ -21,7 +15,11 @@ const CheckBoxList = ({
 
   const handleCheckBox = () => {
     setCheck(!check);
-    checkboxPicker.splice(index, 1, { label: text, state: !check });
+    checkboxPicker.splice(index, 1, {
+      label: text,
+      state: !check,
+      attributeState: false,
+    });
   };
 
   return (
@@ -31,6 +29,7 @@ const CheckBoxList = ({
           value={check}
           onValueChange={handleCheckBox}
           style={styles.checkbox}
+          key={index}
         />
         <Text style={styles.label}>{checkBoxText}</Text>
       </View>

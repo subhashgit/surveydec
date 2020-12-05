@@ -1,127 +1,44 @@
-import React, { useState, useEffect } from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerItem,
-} from "@react-navigation/drawer";
-import GuestTab from "./GuestTab";
-import Home from "./ProviderTab";
-import { Logout } from "../src/store/actions/Auth";
-import { connect } from "react-redux";
-import { userStatus } from "../src/store/actions/User";
+import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { profileInformation } from "../src/store/actions/User";
-import { FontAwesome5 } from "@expo/vector-icons";
-import AccountTab from "./AccountTab";
-import Services from '../src/screens/User/Services'
+import ProviderTabs from "./Provider";
+import Notification from "../src/screens/User/Notification";
+import GuestTabs from "./Guest";
+import MyAccount from "./AccountTab";
 
 const Stack = createStackNavigator();
-const Tab = createBottomTabNavigator();
-const Drawer = createDrawerNavigator();
-
-
-const UserTabs = () => {
+const UserHome = () => {
   return (
-    <Tab.Navigator>
-      <Tab.Screen
+    <Stack.Navigator initialRouteName="Guest">
+      <Stack.Screen
         options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="home" color="#000" size={20} />
-          ),
+          headerShown: false,
         }}
-        name="Home"
-        component={GuestTab}
+        initialParams={{
+          checkVisible: true,
+        }}
+        name="Provider"
+        component={ProviderTabs}
       />
-    </Tab.Navigator>
-  );
-};
-const ProviderTabs = () => {
-  return (
-    <Tab.Navigator>
-      <Tab.Screen
+      <Stack.Screen
         options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="home" color="#000" size={20} />
-          ),
+          headerShown: false,
         }}
-        name="Home"
-        component={Home}
+        initialParams={{
+          checkVisible: false,
+        }}
+        name="Guest"
+        component={GuestTabs}
       />
-      <Tab.Screen
+      <Stack.Screen
         options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="briefcase" color="#000" size={20} />
-          ),
+          headerShown: false,
         }}
-        name="Services "
-        component={Services}
+        name="MyAccount"
+        component={MyAccount}
       />
-    </Tab.Navigator>
-  );
-};
-const CustomDrawerContent = (props) => {
-  let userStatus = props.userStatus;
-  const [check, setCheck] = useState(false);
-
-  useEffect(() => {
-    setCheck(props.status);
-  }, [props.status]);
-  const [state, setState] = useState(false);
-  const handleState = () => {
-    setState(!state);
-    userStatus(state);
-  };
-
-  return (
-    <DrawerContentScrollView {...props}>
-      {check ? (
-        <DrawerItem onPress={handleState} label="Switch to Guest" />
-      ) : (
-        <DrawerItem onPress={handleState} label="Switch to Provider" />
-      )}
-
-      <DrawerItemList {...props} />
-      <DrawerItem onPress={props.Logout} label="Logout" />
-    </DrawerContentScrollView>
+      <Stack.Screen name="Notification" component={Notification} />
+    </Stack.Navigator>
   );
 };
 
-const UserHome = ({ Logout, status, userStatus, profileInformation }) => {
-  useEffect(() => {
-    profileInformation();
-  }, []);
-
-  return (
-    <Drawer.Navigator
-      drawerContent={(props) => (
-        <CustomDrawerContent
-          userStatus={userStatus}
-          status={status}
-          Logout={Logout}
-          {...props}
-        />
-      )}
-      initialRouteName="userTabs"
-    >
-      {status ? (
-        <Drawer.Screen name="Provider" component={ProviderTabs} />
-      ) : (
-        <Drawer.Screen name="Guest" component={UserTabs} />
-      )}
-
-      <Drawer.Screen name="My Account" component={AccountTab} />
-    </Drawer.Navigator>
-  );
-};
-const mapStateToProps = (state) => {
-  return {
-    status: state.User.status,
-  };
-};
-export default connect(mapStateToProps, {
-  Logout,
-  userStatus,
-  profileInformation,
-})(UserHome);
+export default UserHome;

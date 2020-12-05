@@ -12,6 +12,7 @@ import PickImage from "../../components/User/PickImage";
 import ServiceLocation from "../../components/User/ServiceLocation";
 import CategoryPicker from "../../components/User/CategoryPicker";
 import Loader from "../../screens/Auth/Loader";
+import { Button } from "native-base";
 
 const AddService = ({
   navigation,
@@ -20,29 +21,34 @@ const AddService = ({
   getAdminCategory,
   categories,
   loading,
+  serviceLoading,
 }) => {
   const [array, setArray] = useState([]);
 
   const [message, setMessage] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(false);
 
   const [state, setState] = useState({
     serviceName: "",
     location: "",
     maps: "",
     category: "",
-    image: null,
   });
   const [cat, setCat] = useState([]);
   useEffect(() => {
     getAdminCategory();
     setCat(categories);
-    console.log("message", message);
   }, []);
   useEffect(() => {
     setCat(categories);
   }, [categories]);
+  useEffect(() => {
+    console.log();
+    setMessage(serviceMessage);
+  }, [serviceMessage]);
 
   const [addServiceLoading, setAddServiceLoading] = useState(false);
+  const [stateChange, setStateChange] = useState(false);
   useEffect(() => {
     setAddServiceLoading(loading);
   }, [loading]);
@@ -50,18 +56,34 @@ const AddService = ({
     navigation.goBack();
   };
   const [images, setImages] = useState([]);
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState({
+    value: "",
+    features: [],
+  });
 
   const [userLocation, setUserLocation] = useState({
     errorMessage: "",
     locationCords: {},
     map: false,
   });
+  const [visible, setVisible] = useState(false);
 
-  const handleInfo = async () => {
-    AddNewService(state, array, userLocation, images);
-    setCheck(serviceMessage);
-    setMessage(true);
+  const handleInfo = () => {
+    if (
+      state.serviceName !== "" &&
+      state.location !== "" &&
+      state.maps !== null &&
+      state.category !== "" &&
+      array !== [] &&
+      userLocation.locationCords !== {} &&
+      images.length !== 0
+    ) {
+      AddNewService(state, array, userLocation, images);
+      setErrorMessage(false);
+    } else {
+      setErrorMessage(true);
+      setMessage(false);
+    }
   };
   const [newFeature, setNewFeature] = useState({
     label: "",
@@ -72,18 +94,24 @@ const AddService = ({
     setFeatureVisible(!featureVisible);
   };
   const AddFeature = () => {
-    setSelectedValue({
-      ...selectedValue,
-      features: selectedValue.features.concat(newFeature),
-    });
+    console.log("selected value", selectedValue);
+    if (newFeature.label !== "") {
+      setStateChange(true);
+      setSelectedValue({
+        ...selectedValue,
+        other: selectedValue.other,
+        value: selectedValue.value,
+        label: selectedValue.label,
+        features: selectedValue.features.concat(newFeature),
+      });
+    }
   };
-
   const [select, setSelect] = useState(false);
-
   useEffect(() => {
     setArray([]);
     setSelect(false);
   }, [select]);
+
 
   return (
     <>
@@ -97,6 +125,12 @@ const AddService = ({
             </TouchableOpacity>
             {message && (
               <Text style={{ color: "green" }}>Data Added Sucessfully</Text>
+            )}
+            {serviceLoading && (
+              <Text style={{ color: "green" }}>Please wait for a while</Text>
+            )}
+            {errorMessage && (
+              <Text style={{ color: "red" }}>Provide All Information</Text>
             )}
 
             <TouchableOpacity onPress={handleInfo} style={styles.btn}>
@@ -117,14 +151,27 @@ const AddService = ({
                 />
                 <CategoryPicker
                   selectedValue={selectedValue}
-                  // getAttributes={getAttributes}
                   setState={setState}
                   categories={cat}
                   setSelectedValue={setSelectedValue}
                   state={state}
                   setArray={setArray}
                   setSelect={setSelect}
+                  setVisible={setVisible}
+                  visible={visible}
+                  stateChange={stateChange}
                 />
+
+                {visible && (
+                  <Input
+                    name="NewCateogry"
+                    head="Suggest a new Category"
+                    placeHolder="eg. Electrition"
+                    onChangeText={(text) =>
+                      setState({ ...state, category: text })
+                    }
+                  />
+                )}
                 <Text
                   style={{ paddingTop: 15, fontSize: 15, color: "#a9a9a9" }}
                 >
@@ -156,22 +203,10 @@ const AddService = ({
                   <View
                     style={{ flexDirection: "row", justifyContent: "flex-end" }}
                   >
-                    <TouchableOpacity
-                      style={{
-                        width: 320,
-                        height: 40,
-                        alignItems: "center",
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        borderColor: "#a9a9a9",
-                        borderWidth: 1,
-                        borderTopLeftRadius: 5,
-                        borderTopRightRadius: 5,
-                        borderBottomLeftRadius: 5,
-                        borderBottomRightRadius: 5,
-                      }}
-                      activeOpacity={0.7}
+                    <Button
+                      style={styles.showFeatures}
                       onPress={showFeature}
+                      full
                     >
                       <AntDesign name="plus" color={"#000"} fontSize={12} />
                       <Text
@@ -183,7 +218,7 @@ const AddService = ({
                       >
                         New Feature
                       </Text>
-                    </TouchableOpacity>
+                    </Button>
                   </View>
                   {featureVisible && (
                     <View>
@@ -200,22 +235,10 @@ const AddService = ({
                         }
                       />
                       <View style={{ flexDirection: "row", paddingTop: 20 }}>
-                        <TouchableOpacity
-                          style={{
-                            width: 100,
-                            height: 40,
-                            alignItems: "center",
-                            flexDirection: "row",
-                            justifyContent: "center",
-                            borderColor: "#a9a9a9",
-                            borderWidth: 1,
-                            borderTopLeftRadius: 5,
-                            borderTopRightRadius: 5,
-                            borderBottomLeftRadius: 5,
-                            borderBottomRightRadius: 5,
-                          }}
-                          activeOpacity={0.7}
+                        <Button
+                          style={styles.addFeatures}
                           onPress={AddFeature}
+                          full
                         >
                           <Text
                             style={{
@@ -226,7 +249,7 @@ const AddService = ({
                           >
                             Add Feature
                           </Text>
-                        </TouchableOpacity>
+                        </Button>
                       </View>
                     </View>
                   )}
@@ -258,6 +281,7 @@ const AddService = ({
 const mapStateToProps = (state) => {
   return {
     serviceMessage: state.Service.serviceMessage,
+    serviceLoading: state.Service.serviceLoading,
     categories: state.category.adminCollection,
     categoryFeatures: state.Service.categoryFeatures,
     loading: state.Service.loading,

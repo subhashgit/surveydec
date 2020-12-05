@@ -18,14 +18,14 @@ import {
   deleteCategory,
 } from "../../store/actions/Category";
 import { Button } from "react-native-paper";
-import Input from "../../components/Generic/Input";
+import Input from "../../components/Generic/AccountInput";
 
 const AddNewCategory = ({ ...props }) => {
   let navigation = props.navigation;
   let AddCategory = props.AddCategory;
   let updateCategory = props.updateCategory;
   let deleteCategory = props.deleteCategory;
-  let deleteMessage = props.deleteMessage
+  // let deleteMessage = props.deleteMessage;
 
   const [state, setState] = useState({
     id: null,
@@ -34,11 +34,25 @@ const AddNewCategory = ({ ...props }) => {
   });
 
   const [select, setSelect] = useState(false);
-
   useEffect(() => {
-    console.log("props.route.params.data", props.route.params);
-    if (props.route.params.key != 1) {
+    if (
+      props.route.params.key != 1 &&
+      props.route.params.data.other === false
+    ) {
       setSelect(true);
+      setState({
+        ...state,
+        value: props.route.params.data.value,
+        label: props.route.params.data.label,
+      });
+      setOther(false);
+      setVisible(false);
+      setChekbox(props.route.params.data.features);
+    }
+    if (props.route.params.key != 1 && props.route.params.data.other === true) {
+      setSelect(true);
+      setOther(true);
+      setVisible(true);
       setState({
         ...state,
         value: props.route.params.data.value,
@@ -50,9 +64,10 @@ const AddNewCategory = ({ ...props }) => {
   const navigationHandler = () => {
     navigation.goBack();
   };
-  const [features, setFeatures] = useState([]);
   const [category, setCategory] = useState("");
   const [check, setCheck] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const [other, setOther] = useState(false);
 
   const [checkboxPicker, setChekbox] = useState([
     {
@@ -96,6 +111,7 @@ const AddNewCategory = ({ ...props }) => {
   };
 
   const handleCategory = () => {
+    subCategory.unshift(category);
     AddCategory(category, checkboxPicker);
     navigation.goBack();
   };
@@ -104,9 +120,10 @@ const AddNewCategory = ({ ...props }) => {
     status: false,
   });
   const handleAddFeatures = () => {
-    setChekbox(checkboxPicker.concat(newFeature));
+    if (newFeature.label !== "") {
+      setChekbox(checkboxPicker.concat(newFeature));
+    }
   };
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -119,7 +136,6 @@ const AddNewCategory = ({ ...props }) => {
         <View style={styles.header}>
           <TouchableOpacity onPress={navigationHandler}>
             <AntDesign name={"arrowleft"} size={25} color={"#000"} />
-
           </TouchableOpacity>
           {select ? (
             <TouchableOpacity onPress={handleUpdateCategory} style={styles.btn}>
@@ -137,7 +153,7 @@ const AddNewCategory = ({ ...props }) => {
             <Text style={{ color: "#a9a9a9", paddingBottom: 5 }}>Name</Text>
             <DropDownPicker
               items={subCategory}
-              defaultValue={state.value}
+              defaultValue={other ? "other" : state.value}
               placeholder="select categories"
               containerStyle={{ height: 50 }}
               style={{ backgroundColor: "#f7f7f7", borderColor: "#a9a9a9" }}
@@ -146,29 +162,39 @@ const AddNewCategory = ({ ...props }) => {
               }}
               dropDownStyle={{ backgroundColor: "#f7f7f7" }}
               onChangeItem={(item) => {
-                console.log("itemmm", item);
-                setCategory(item);
+                if (item.value !== "other") {
+                  setCategory({
+                    ...category,
+                    value: item.value,
+                    label: item.label,
+                    other: false,
+                  });
+                  setVisible(false);
+                }
+                if (item.value === "other") {
+                  setVisible(true);
+                }
               }}
             />
           </View>
-          {/* <View style={{ paddingTop: 20 }}>
-          <DropDownPicker
-            items={parentCategoryPicker}
-            defaultValue=""
-            placeholder="Select Collection"
-            multipleText="%d items have been selected."
-            containerStyle={{ height: 50 }}
-            style={{ backgroundColor: "#f7f7f7", borderColor: "#a9a9a9" }}
-            itemStyle={{
-              justifyContent: "flex-start",
-            }}
-            dropDownStyle={{ backgroundColor: "#f7f7f7" }}
-            onChangeItem={(item) => {
-              setCollections(item);
-            }}
-          />
-        </View> */}
-
+          {visible && (
+            <View style={{ paddingBottom: 20 }}>
+              <Input
+                name="ParentCategory"
+                head="Category Name"
+                placeHolder="e.g Electrition"
+                defaultValue={state.label}
+                onChangeText={(text) =>
+                  setCategory({
+                    ...category,
+                    value: text.replace(/\s/g, ""),
+                    label: text,
+                    other: true,
+                  })
+                }
+              />
+            </View>
+          )}
           <View style={{ paddingTop: 20 }}>
             <Text style={styles.heading}>
               Assign Features for This Category
@@ -182,10 +208,8 @@ const AddNewCategory = ({ ...props }) => {
                   return (
                     <CheckBoxList
                       key={item.value}
-                      onValueChange={(state) => {}}
                       text={item.label}
                       value={item.state}
-                      // setChekbox={setChekbox}
                       checkboxPicker={checkboxPicker}
                       index={index}
                       setCheck={setCheck}
@@ -195,9 +219,10 @@ const AddNewCategory = ({ ...props }) => {
               />
             </View>
           </View>
+
           <View style={{ paddingBottom: 20 }}>
             <Input
-              name="ParentCategory"
+              name="Category"
               onChangeText={(text) =>
                 setNewFeature({
                   ...newFeature,
@@ -210,6 +235,7 @@ const AddNewCategory = ({ ...props }) => {
               placeHolder="e.g Delivery Included"
             />
           </View>
+
           <View style={{ paddingBottom: 40 }}>
             <TouchableOpacity activeOpacity={0.8}>
               <Button
@@ -251,61 +277,17 @@ const AddNewCategory = ({ ...props }) => {
     </KeyboardAvoidingView>
   );
 };
-const mapStateToProps=(state)=>{
+const mapStateToProps = (state) => {
   return {
-    deleteMessage: state.category.deleteMessage
+    deleteMessage: state.category.deleteMessage,
+  };
+};
+export default connect(mapStateToProps, {
+  AddCategory,
+  updateCategory,
+  deleteCategory,
+})(AddNewCategory);
 
-  }
-}
-export default connect(mapStateToProps, { AddCategory, updateCategory, deleteCategory })(
-  AddNewCategory
-);
-// const parentCategoryPicker = [
-//   {
-//     label: "Arts & Crafts",
-//     value: "Arts&Crafts",
-//   },
-//   {
-//     label: "Food",
-//     value: "Food",
-//   },
-//   {
-//     label: "Giving Back",
-//     value: "GivingBack",
-//   },
-//   {
-//     label: "Hair & Beauty",
-//     value: "Hair&Beauty",
-//   },
-//   {
-//     label: "Home",
-//     value: "Home",
-//   },
-//   {
-//     label: "Learn to..",
-//     value: "LearnTo",
-//   },
-//   {
-//     label: "Logistics",
-//     value: "Logistics",
-//   },
-//   {
-//     label: "Other",
-//     value: "other",
-//   },
-//   {
-//     label: "Outdoor",
-//     value: "Outdoor",
-//   },
-//   {
-//     label: "Remote Work",
-//     value: "RemoteWork",
-//   },
-//   {
-//     label: "Repairs",
-//     value: "Repairs",
-//   },
-// ];
 const subCategory = [
   {
     label: "Plumber",
@@ -398,5 +380,9 @@ const subCategory = [
   {
     label: "Gas Installation",
     value: "GasInstallation",
+  },
+  {
+    label: "other",
+    value: "other",
   },
 ];

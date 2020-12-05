@@ -15,11 +15,9 @@ export const AddNewService = (
 
   if (user) {
     dispatch({
-      type: "ADDSERVICE_LODAER",
+      type: "SERVICE_LOADING",
       payload: true,
     });
-    
-
     const data = await db
       .collection("users")
       .get()
@@ -33,6 +31,7 @@ export const AddNewService = (
       .then(() => {
         images.forEach(async (serviceImage) => {
           const ImageResponse = await fetch(serviceImage);
+          // console.log("resss", res);
           const blob = await ImageResponse.blob();
 
           var ref = firebase.storage().ref().child(`images/${serviceImage}`);
@@ -60,27 +59,31 @@ export const AddNewService = (
               imagesUrl: imageArray,
               createdAt: new Date(),
             })
-            .then((docRef) => {})
-            .catch(() => {
+            .then((docRef) => {
               dispatch({
                 type: "ADD_SERVICE",
+                payload: true,
+              });
+              dispatch({
+                type: "SERVICE_LOADING",
+                payload: false,
+              });
+            })
+            .catch(() => {
+              dispatch({
+                type: "FAIL_SERVICE",
+                payload: true,
+              });
+              dispatch({
+                type: "SERVICE_LOADING",
                 payload: false,
               });
             });
         }
 
-        setTimeout(addService, 25000);
+        setTimeout(addService, 15000);
       })
-      .then(() => {
-        dispatch({
-          type: "ADDSERVICE_LODAER",
-          payload: false,
-        });
-        dispatch({
-          type: "ADD_SERVICE",
-          payload: true,
-        });
-      });
+      .then(async () => {});
   } else {
     console.log("user is not signed in");
   }
@@ -132,12 +135,6 @@ export const addServiceReview = (state, id) => async (
   let Name = reduxState.profile.profileInformation[0].Name;
   let photoURL = reduxState.profile.profileInformation[0].photoURL;
 
-  let total =
-    (state.service +
-      state.valueOfMoney +
-      state.professionalism +
-      state.presentaion) /
-    4;
   const res = await db
     .collection("services")
     .doc(id)
@@ -145,11 +142,7 @@ export const addServiceReview = (state, id) => async (
     .add({
       serviceId: id,
       comment: state.comment,
-      serviceRating: state.service,
-      moneyRating: state.valueOfMoney,
-      professionalismRating: state.professionalism,
-      presentaionRating: state.presentaion,
-      totalRating: total,
+      totalRating: state.service,
       userId: user.uid,
       Name: Name,
       photoURL: photoURL,
@@ -220,46 +213,3 @@ export const getServiceReview = (id) => async (
       });
     });
 };
-
-export const getMyServices = () => async (
-  dispatch,
-  getState,
-  { getFirestore, getFirebase }
-) => {
-  const db = getFirestore();
-  const firebase = getFirebase();
-  var user = await firebase.auth().currentUser;
-  let services = [];
-
-  if (user) {
-    const res = await db
-      .collection("services")
-      .where("approve", "==", true)
-      .get()
-      .then((response) => {
-        response.docs.forEach((userData) => {
-          if (user.uid == userData.data().userId) {
-            services.push({ ...userData.data(), id: userData.id });
-          }
-        });
-      })
-      .then(() => {
-        dispatch({
-          type: "MY_SERVICES",
-          payload: services,
-        });
-      });
-  }
-};
-
-// .then((response) => {
-//   response.docs.forEach((item, index) => {
-//     console.log("item a daaraa", item.data())
-//     services.push({ ...item.data(), id: item.id });
-//   });
-//   console.log("servicessss", services);
-//   dispatch({
-//     type: "MY_SERVICES",
-//     payload: services,
-//   });
-// });

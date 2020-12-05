@@ -5,13 +5,13 @@ import { View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Rating from "../Generic/Rating";
+import { LinearGradient } from 'expo-linear-gradient';
 
 const stars = [1, 2, 3, 4, 5];
-const ListingItem = (props) => {
-  let data = props.data;
-  let navigation = props.navigation
+const ListingItem = ({ data, navigation }) => {
   const [serviceImage, setServiceImage] = useState("");
   useEffect(() => {
+    console.log("imageUrl");
     if(data.imagesUrl !== []){
       data.imagesUrl.map((currentImage) => {
         setServiceImage(currentImage);
@@ -23,20 +23,34 @@ const ListingItem = (props) => {
 
   return (
     <TouchableOpacity
-      activeOpacity={0.8}
+      activeOpacity={1}
       onPress={() => {
+        console.log("csdasdas");
         navigation.navigate("ListDetail", {
           data: data,
           key: data,
         });
       }}
     >
-      <View style={{ paddingBottom: 20 }}>
+      <View style={{ paddingBottom: 20, paddingLeft:15, paddingRight:15, }}>
         <Card style={{ height: 280 }}>
           <ImageBackground style={{ flex: 1 }} source={{ uri: serviceImage }}>
+          <LinearGradient
+        // Background Linear Gradient
+        colors={['rgba(0,0,0,0.5)', 'transparent']}
+        style={{
+          position: 'absolute',
+          left: 0,
+          right: 0,
+          top: 0,
+          height: 300,
+        }}
+      >
             <Text style={{ padding: 20, color: "#fff", fontSize: 18 }}>
               {data.serviceName}
             </Text>
+                  </LinearGradient>
+
           </ImageBackground>
           <Card.Content style={{ flexDirection: "row", padding: 20 }}>
             <FontAwesome

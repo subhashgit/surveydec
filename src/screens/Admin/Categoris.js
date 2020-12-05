@@ -11,13 +11,10 @@ const Users = ({ navigation, getAdminCategory, categories }) => {
     getAdminCategory();
     setNewCategories(categories);
   }, []);
-
   const [newCatgories, setNewCategories] = useState([]);
   useEffect(() => {
-    console.log("categoriesss", categories);
     setNewCategories(categories);
   }, [categories]);
-
   return (
     <View style={styles.screen}>
       <Header visible={true} navigation={navigation} name="Categories" />

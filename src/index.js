@@ -6,21 +6,16 @@ import AuthTab from "../routes/Auth";
 import Loader from "./screens/Auth/Loader";
 import { connect } from "react-redux";
 import { verifyUser } from "../src/store/actions/Auth";
-
 import Authority from "../routes/Authority";
-
 import { profileInformation } from "../src/store/actions/User";
-import { LogBox } from 'react-native';
-LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+import { LogBox } from "react-native";
+LogBox.ignoreLogs(["Warning: ..."]);
 LogBox.ignoreAllLogs();
-
-const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
 
 const index = ({ userState, verifyUser, loading }) => {
   const [isSignedIn, setSignedIn] = useState(false);
   useEffect(() => {
-    console.log("loading", loading)
+    console.log("loading", loading);
     verifyUser();
   }, []);
   useEffect(() => {

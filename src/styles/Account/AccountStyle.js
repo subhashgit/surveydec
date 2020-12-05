@@ -79,10 +79,20 @@ export const styles = StyleSheet.create({
         height: 80,
         paddingTop: 10
       },
-      textColor:{
-        color: "#000"
-      }
- 
+
+      textwrap:{
+        position:'relative',
+      },
+      texticon:{
+        position:'absolute',
+        right:10,
+        color: "#000",
+        fontSize:24,
+        bottom:11,
+      },
+      topfunacc:{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between'}
+
+
  
   });
   

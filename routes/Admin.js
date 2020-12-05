@@ -1,7 +1,4 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View, YellowBox } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
 import Listing from "../src/screens/Admin/Listing";
 import Categories from "../src/screens/Admin/Categoris";
 import Users from "../src/screens/Admin/Users";

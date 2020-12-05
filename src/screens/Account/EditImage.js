@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { View, Image, Text } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import * as ImagePicker from "expo-image-picker";
 import { UploadProfileImage } from "../../store/actions/Account";
 import { connect } from "react-redux";
 import { Button } from "native-base";
-const EditImage = ({ navigation, UploadProfileImage }) => {
+const EditImage = ({ UploadProfileImage }) => {
   const [image, setImage] = useState(null);
   useEffect(() => {
     (async () => {
