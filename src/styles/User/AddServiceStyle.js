@@ -71,6 +71,16 @@ export const styles = StyleSheet.create({
     paddingTop: 10,
     color: "#a9a9a9",
   },
+   inputfml: {
+    height: 50,
+    paddingLeft: 10,
+    flex: 1,
+    color:'#000',
+
+    textAlign: "center",
+    paddingTop: 14,
+
+  },
   inputContainer: {
     borderWidth: 1,
     backgroundColor: "#f7f7f7",
@@ -82,15 +92,14 @@ export const styles = StyleSheet.create({
   },
   showFeatures: {
     flex: 1,
-    borderColor: "#a9a9a9",
-    elevation: 0,
-    borderWidth: 1,
-    borderTopLeftRadius: 5,
+     elevation: 0,
+     width:250,
+     borderTopLeftRadius: 5,
     borderTopRightRadius: 5,
     borderBottomLeftRadius: 5,
     borderBottomRightRadius: 5,
-    backgroundColor: "red",
-    backgroundColor: "#f7f7f7",
+ 
+    backgroundColor: "#efefef",
   },
   addFeatures: {
     flex: 1,
@@ -104,4 +113,6 @@ export const styles = StyleSheet.create({
     backgroundColor: "red",
     backgroundColor: "#f7f7f7",
   },
+  nfbtn:{flexDirection: "row", justifyContent: "flex-end",  borderColor: "#a9a9a9", borderWidth:1,borderRadius:5,padding:3}
+  
 });

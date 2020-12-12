@@ -4,6 +4,7 @@ import ProviderTabs from "./Provider";
 import Notification from "../src/screens/User/Notification";
 import GuestTabs from "./Guest";
 import MyAccount from "./AccountTab";
+import { Logout } from "../src/store/actions/Auth";
 
 const Stack = createStackNavigator();
 const UserHome = () => {
@@ -37,8 +38,8 @@ const UserHome = () => {
         component={MyAccount}
       />
       <Stack.Screen name="Notification" component={Notification} />
+     
     </Stack.Navigator>
   );
 };
-
 export default UserHome;

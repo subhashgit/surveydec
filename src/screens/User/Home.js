@@ -156,11 +156,10 @@ const styles = StyleSheet.create({
 
   listoption: {
     alignItems: "center",
-
     flexDirection: "row",
-    width: 170,
+    width: 140,
     height: 80,
-    marginRight: 15,
+    marginRight: 0,
     marginLeft: 15,
     backgroundColor: "#fff",
     padding: 10,
@@ -175,7 +174,7 @@ const styles = StyleSheet.create({
   listtxt: {
     flex: 1,
     flexWrap: "wrap",
-    fontSize: 18,
+    fontSize: 14,
     color: "#fff",
   },
   bannercont: {

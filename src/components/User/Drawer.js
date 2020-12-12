@@ -6,6 +6,7 @@ import {
   TouchableHighlight,
   ImageBackground,
   Switch,
+  Linking,
   TouchableOpacity,
 } from "react-native";
 import {
@@ -18,6 +19,15 @@ import { styles } from "../../styles/User/UserHeaderStyle";
 import { connect } from "react-redux";
 import { profileInformation, userStatus } from "../../store/actions/User";
 import imagebg from "../../../assets/images/hamburger_BG.jpg";
+import firebase from "../../config/config.js";
+const signOutUser = async () => {
+    try {
+        await firebase.auth().signOut();
+        navigate('Auth');
+    } catch (e) {
+        console.log(e);
+    }
+}
 
 const Drawer = ({
   navigation,
@@ -185,7 +195,7 @@ const Drawer = ({
                     <Text style={styles.naviconsubtxt}>Your profile </Text>{" "}
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.listnav}>
+                <TouchableOpacity  onPress={signOutUser} style={styles.listnav}>
                   <MaterialCommunityIcons
                     style={styles.navicon}
                     name="key"
@@ -196,10 +206,14 @@ const Drawer = ({
               </View>
               <View style={styles.copyrights}>
                 <Text style={styles.rightstxt}> ©2020 Servey </Text>
-                <Text style={styles.rightstxt}>
-                  {" "}
-                  Term & Conditions. Privacy policy{" "}
+                <View style={{display:'flex',flexDirection:'row'}}>
+                <Text style={styles.rightstxt} onPress={ ()=> Linking.openURL('http://servy.co.za/terms-of-use/') }> Term & Conditions. </Text> 
+
+                <Text style={styles.rightstxt} onPress={ ()=> Linking.openURL('http://servy.co.za/privacy-policy/') }> Privacy policy
                 </Text>
+                </View>
+                
+                
               </View>
             </View>
           </View>
