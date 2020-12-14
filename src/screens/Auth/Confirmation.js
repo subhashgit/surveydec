@@ -25,9 +25,8 @@ const Conformaion = ({ Logout }) => {
     </Container>
   );
 };
-const mapStateToProps = () => {};
 
-export default connect(mapStateToProps, { Logout })(Conformaion);
+export default connect("", { Logout })(Conformaion);
 const styles = StyleSheet.create({
   container: {
     marginTop: 50,

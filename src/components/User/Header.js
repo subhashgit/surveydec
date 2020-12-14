@@ -7,7 +7,6 @@ import { profileInformation } from "../../store/actions/User";
 import { styles } from "../../styles/User/UserHeaderStyle";
 const Header = ({ ...props }) => {
   let navigation = props.navigation;
-  let visible = props.visible;
   let profileInfo = props.profileInfo;
   let checkVisible = props.checkVisible;
   const [state, setState] = useState({
@@ -55,7 +54,6 @@ const Header = ({ ...props }) => {
   const handleNotification = () => {
     navigation.navigate("Notification");
   };
-
   return (
     <>
       <View style={styles.container}>

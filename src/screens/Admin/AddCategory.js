@@ -74,31 +74,37 @@ const AddNewCategory = ({ ...props }) => {
       label: "Delivery Included",
       id: "DeliveryIncluded",
       state: false,
+      attributeState: false,
     },
     {
       label: "Responds Immediately",
       id: "RespondsImmediately",
       state: false,
+      attributeState: false,
     },
     {
       label: "Works Remotely",
       id: "WorksRemotely",
       state: false,
+      attributeState: false,
     },
     {
       label: "We come to you",
       id: "Wecometoyou",
       state: false,
+      attributeState: false,
     },
     {
       label: "Work from Home",
       id: "WorkfromHome",
       state: false,
+      attributeState: false,
     },
     {
       label: "You come to me",
       id: "Youcometome",
       state: false,
+      attributeState: false,
     },
   ]);
   const handleUpdateCategory = () => {
@@ -213,6 +219,7 @@ const AddNewCategory = ({ ...props }) => {
                       checkboxPicker={checkboxPicker}
                       index={index}
                       setCheck={setCheck}
+                      id={item.id}
                     />
                   );
                 }}
@@ -227,8 +234,9 @@ const AddNewCategory = ({ ...props }) => {
                 setNewFeature({
                   ...newFeature,
                   label: text,
-                  status: false,
-                  id: text,
+                  id: text.replace(/\s/g, ""),
+                  state: false,
+                  attributeState: false,
                 })
               }
               head="Feature Name"

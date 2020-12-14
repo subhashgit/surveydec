@@ -7,8 +7,8 @@ const initialState = {
   reviewsList: [],
   userReviewInfo: [],
   loader: false,
+  serviceLoader: true,
 };
-
 export default function ServiceReducer(state = initialState, action) {
   switch (action.type) {
     case "ADD_SERVICE":
@@ -50,6 +50,11 @@ export default function ServiceReducer(state = initialState, action) {
       return {
         ...state,
         loader: action.payload,
+      };
+    case "SERVICE_LOADER":
+      return {
+        ...state,
+        serviceLoader: action.payload,
       };
 
     default:

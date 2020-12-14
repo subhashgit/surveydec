@@ -75,7 +75,7 @@ const AddService = ({
       state.maps !== null &&
       state.category !== "" &&
       array !== [] &&
-      userLocation.locationCords !== {} &&
+      Object.keys(userLocation.locationCords).length !== 0 &&
       images.length !== 0
     ) {
       AddNewService(state, array, userLocation, images);
@@ -111,7 +111,6 @@ const AddService = ({
     setArray([]);
     setSelect(false);
   }, [select]);
-
 
   return (
     <>
@@ -193,6 +192,7 @@ const AddService = ({
                               label={subValue.label}
                               subValue={selectedValue.features}
                               state={subValue.state}
+                              id={subValue.id}
                             />
                           )}
                         </>
@@ -229,8 +229,10 @@ const AddService = ({
                         onChangeText={(values) =>
                           setNewFeature({
                             ...newFeature,
+                            attributeState: false,
                             label: values,
                             state: true,
+                            id: values.replace(/\s/g, ""),
                           })
                         }
                       />

@@ -25,7 +25,11 @@ const CategoryList = ({ data, navigation }) => {
             style={{ flex: 1 }}
             left={(props) => <List.Icon {...props} icon="hand" />}
             right={(props) => <List.Icon {...props} icon="hand" />}
-            description={state.features.map((i) => `${i.label}  `)}
+            description={state.features.map((i) => {
+              if (i.state === true) {
+                return `${i.label}  `;
+              }
+            })}
             title={state.label}
             id={state.id}
             expanded={expanded}

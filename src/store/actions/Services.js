@@ -31,7 +31,6 @@ export const AddNewService = (
       .then(() => {
         images.forEach(async (serviceImage) => {
           const ImageResponse = await fetch(serviceImage);
-          // console.log("resss", res);
           const blob = await ImageResponse.blob();
 
           var ref = firebase.storage().ref().child(`images/${serviceImage}`);
@@ -94,7 +93,10 @@ export const getServices = () => async (
   { getFirestore, getFirebase }
 ) => {
   const db = getFirestore();
-  const firebase = getFirebase();
+  dispatch({
+    type: "SERVICE_LOADER",
+    payload: true,
+  });
   let services = [];
 
   const res = await db
@@ -103,11 +105,19 @@ export const getServices = () => async (
     .get()
     .then((response) => {
       response.docs.forEach((item, index) => {
+        dispatch({
+          type: "SERVICE_LOADER",
+          payload: false,
+        });  
         services.push({ ...item.data(), id: item.id });
       });
       dispatch({
         type: "SERVICES",
         payload: services,
+      });
+      dispatch({
+        type: "SERVICE_LOADER",
+        payload: false,
       });
     });
 };
@@ -134,6 +144,7 @@ export const addServiceReview = (state, id) => async (
   const reduxState = getState();
   let Name = reduxState.profile.profileInformation[0].Name;
   let photoURL = reduxState.profile.profileInformation[0].photoURL;
+  let Reviews = [];
 
   const res = await db
     .collection("services")
@@ -149,8 +160,6 @@ export const addServiceReview = (state, id) => async (
       createdAt: new Date(),
     })
     .then((e) => {
-      let total;
-      let AverageRating;
       db.collection("services")
         .doc(id)
         .get()
@@ -171,9 +180,28 @@ export const addServiceReview = (state, id) => async (
               });
             });
         });
-      console.log("data added sucessfully");
+    })
+    .then(() => {
+      db.collection("services")
+        .doc(id)
+        .collection("reviews")
+        .orderBy("createdAt", "desc")
+        .get()
 
-      console.log("totall", total);
+        .then((docRef) => {
+          docRef.docs.map((data) => {
+            Reviews.push({
+              ...data.data(),
+              id: data.id,
+            });
+          });
+        })
+        .then(() => {
+          dispatch({
+            type: "GET_REVIEWS",
+            payload: Reviews,
+          });
+        });
     });
 };
 export const getServiceReview = (id) => async (
@@ -182,7 +210,6 @@ export const getServiceReview = (id) => async (
   { getFirestore, getFirebase }
 ) => {
   const db = getFirestore();
-  const firebase = getFirebase();
 
   let Reviews = [];
   dispatch({
@@ -193,6 +220,7 @@ export const getServiceReview = (id) => async (
     .collection("services")
     .doc(id)
     .collection("reviews")
+    .orderBy("createdAt", "desc")
     .get()
     .then((docRef) => {
       docRef.docs.map((data) => {
@@ -210,6 +238,43 @@ export const getServiceReview = (id) => async (
       dispatch({
         type: "GET_REVIEWS",
         payload: Reviews,
+      });
+    });
+};
+
+export const getServicesByCategory = (data) => async (
+  dispatch,
+  getState,
+  { getFirestore, getFirebase }
+) => {
+  const db = getFirestore();
+  let services = [];
+  dispatch({
+    type: "SERVICE_LOADER",
+    payload: true,
+  });
+  const res = await db
+    .collection("services")
+    .where("category", "==", data)
+    .get()
+    .then((response) => {
+      response.docs.forEach((item, index) => {
+        dispatch({
+          type: "SERVICE_LOADER",
+          payload: false,
+        });
+        if (item.data().approve === true) {
+          services.push({ ...item.data(), id: item.id });
+        }
+      });
+      console.log("Hereeee");
+      dispatch({
+        type: "SERVICES",
+        payload: services,
+      });
+      dispatch({
+        type: "SERVICE_LOADER",
+        payload: false,
       });
     });
 };

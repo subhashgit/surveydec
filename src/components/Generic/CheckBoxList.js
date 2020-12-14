@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Text, Image, StyleSheet, View } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
 
-const CheckBoxList = ({ text, value, checkboxPicker, index }) => {
+const CheckBoxList = ({ text, value, checkboxPicker, index, id }) => {
   const [check, setCheck] = useState(false);
   const [checkBoxText, setCheckBoxText] = useState("");
 
@@ -18,6 +18,7 @@ const CheckBoxList = ({ text, value, checkboxPicker, index }) => {
     checkboxPicker.splice(index, 1, {
       label: text,
       state: !check,
+      id: id,
       attributeState: false,
     });
   };

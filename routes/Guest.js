@@ -1,14 +1,13 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./ServicesTab";
-import Services from "../src/screens/User/Services";
+import Services from "./Provider";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const GuestTab = () => {
-  console.log("Guest Tab")
   return (
     <Tab.Navigator
       tabBarOptions={{

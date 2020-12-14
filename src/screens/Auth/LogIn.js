@@ -15,7 +15,6 @@ import { connect } from "react-redux";
 import { signInWithEmail } from "../../store/actions/Auth";
 import { signInWithGoogle } from "../../store/actions/Auth";
 import googleIcon from "../../../assets/images/google.jpg";
-import facebookIcon from "../../../assets/images/facebook.png";
 
 const Login = ({ signInWithEmail, navigation, signInWithGoogle }) => {
   const [userEmail, setEmail] = useState("");
@@ -63,14 +62,6 @@ const Login = ({ signInWithEmail, navigation, signInWithGoogle }) => {
             <Image style={styles.socialIcon} source={googleIcon} />
             <Text style={styles.socialBtnText}>SignIn with Google</Text>
           </Button>
-          {/* <Button
-            onPress={handleSignInWithFacebook}
-            full
-            style={styles.facebookBtn}
-          >
-            <Image style={styles.socialIcon} source={facebookIcon} />
-            <Text style={styles.socialBtnText}>SignIn with facebook</Text>
-          </Button> */}
         </Form>
         <View>
           <Text style={styles.textinfob}>Dont't have an account? </Text>
@@ -78,10 +69,6 @@ const Login = ({ signInWithEmail, navigation, signInWithGoogle }) => {
             Sign Up
           </Text>
         </View>
-        {/* <View>
-          <Text style={styles.textinfob}>Not receiving your magic link? </Text>
-          <Text style={styles.signuplink}>Sign Up with password</Text>
-        </View> */}
       </Content>
     </Container>
   );

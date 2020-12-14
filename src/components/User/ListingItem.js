@@ -5,52 +5,57 @@ import { View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Rating from "../Generic/Rating";
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from "expo-linear-gradient";
+import bg from "../../../assets/images/bg.png";
 
 const stars = [1, 2, 3, 4, 5];
-const ListingItem = ({ data, navigation }) => {
-  const [serviceImage, setServiceImage] = useState("");
+const ListingItem = ({ data, navigation, pad }) => {
+  const [serviceImage, setServiceImage] = useState({
+    image: "",
+    state: false,
+  });
   useEffect(() => {
-    console.log("imageUrl");
-    if(data.imagesUrl !== []){
-      data.imagesUrl.map((currentImage) => {
-        setServiceImage(currentImage);
+    if (data.imagesUrl !== []) {
+      setServiceImage({
+        ...serviceImage,
+        image: data.imagesUrl[0],
+        state: true,
       });
-
     }
-    
-  }, [data]);
-
+  }, [data.imagesUrl]);
+  // serviceImage.state === true ? serviceImage.image : bg
   return (
     <TouchableOpacity
       activeOpacity={1}
       onPress={() => {
-        console.log("csdasdas");
         navigation.navigate("ListDetail", {
           data: data,
-          key: data,
+          key: data.id,
         });
       }}
     >
-      <View style={{ paddingBottom: 20, paddingLeft:15, paddingRight:15, }}>
+      <View style={{ paddingBottom: 20, paddingLeft: pad, paddingRight: pad }}>
         <Card style={{ height: 280 }}>
-          <ImageBackground style={{ flex: 1 }} source={{ uri: serviceImage }}>
-          <LinearGradient
-        // Background Linear Gradient
-        colors={['rgba(0,0,0,0.5)', 'transparent']}
-        style={{
-          position: 'absolute',
-          left: 0,
-          right: 0,
-          top: 0,
-          height: 300,
-        }}
-      >
-            <Text style={{ padding: 20, color: "#fff", fontSize: 18 }}>
-              {data.serviceName}
-            </Text>
-                  </LinearGradient>
-
+          <ImageBackground
+            style={{ flex: 1 }}
+            source={
+              serviceImage.state === true ? { uri: serviceImage.image } : bg
+            }
+          >
+            <LinearGradient
+              colors={["rgba(0,0,0,0.5)", "transparent"]}
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                top: 0,
+                height: 300,
+              }}
+            >
+              <Text style={{ padding: 20, color: "#fff", fontSize: 18 }}>
+                {data.serviceName}
+              </Text>
+            </LinearGradient>
           </ImageBackground>
           <Card.Content style={{ flexDirection: "row", padding: 20 }}>
             <FontAwesome

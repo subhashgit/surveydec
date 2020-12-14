@@ -1,16 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   ScrollView,
   View,
   Image,
+  TouchableOpacity,
+  PermissionsAndroid
 } from "react-native";
 import Header from "../../components/User/Header";
 import ListingItem from "../../components/User/ListingItem";
 import { Text } from "native-base";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { connect } from "react-redux";
-import { getServices } from "../../store/actions/Services";
+import {
+  getServices,
+  getServicesByCategory,
+} from "../../store/actions/Services";
+import Filter from "../../components/User/Filter";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 
 const items = [
@@ -42,14 +47,34 @@ const items = [
 const Home = ({ ...props }) => {
   let navigation = props.navigation;
   let getServices = props.getServices;
-  let services = props.services;
+  let getServicesByCategory = props.getServicesByCategory;
+  const [showFilter, setShowFilter] = useState(false);
+  useEffect(() => {
+    getServices();
+
+  }, []);
+  const handleFilter = () => {
+    setShowFilter(!showFilter);
+  };
+  const [newServices, setNewServices] = useState([]);
   useEffect(() => {
     getServices();
   }, []);
+  useEffect(() => {
+    setNewServices(props.services);
+  }, [props.services]);
+  useEffect(() => {
+    if (props.route.params.id === 2) {
+      getServicesByCategory(props.route.params.state);
+    }
+    if (props.route.params.id === 3) {
+      getServices();
+    }
+  }, [props.route]);
 
   return (
-    <View>
-      <View style={styles.screen}>
+    <TouchableOpacity onPress={() => setShowFilter(false)} activeOpacity={1}>
+      <View opacity={showFilter ? 0.7 : 1} style={styles.screen}>
         <View style={styles.header}>
           <Header navigation={navigation} name="Home" visible={true} />
         </View>
@@ -78,24 +103,25 @@ const Home = ({ ...props }) => {
           <View style={styles.categorieslisting}>
             <View style={styles.milesdata}>
               <Text style={styles.milesdatatxt}>
-                {" "}
-                Suggested Servey pro's in your area{" "}
+                Suggested Servey pro's in your area
               </Text>
-              <View style={styles.milesdatain}>
-                <MaterialCommunityIcons
-                  style={{ fontSize: 22, paddingTop: 10 }}
-                  name="filter-variant"
-                />
-
-                <Text style={styles.milesdatatxtmi}> 2 Mile</Text>
-              </View>
+              <TouchableOpacity activeOpacity={0.7} onPress={handleFilter}>
+                <View style={styles.milesdatain}>
+                  <MaterialCommunityIcons
+                    style={{ fontSize: 22, paddingTop: 10 }}
+                    name="filter-variant"
+                  />
+                  <Text style={styles.milesdatatxtmi}> 2 Mile</Text>
+                </View>
+              </TouchableOpacity>
             </View>
             <ScrollView
               showsHorizontalScrollIndicator={false}
               horizontal={true}
             >
-              {services.map((data) => (
+              {newServices.map((data) => (
                 <ListingItem
+                  pad={15}
                   key={data.id}
                   data={data}
                   navigation={navigation}
@@ -130,7 +156,13 @@ const Home = ({ ...props }) => {
           </View>
         </ScrollView>
       </View>
-    </View>
+      <Filter
+        navigation={navigation}
+        setShowFilter={setShowFilter}
+        modalVisible={showFilter}
+        route={props.route}
+      />
+    </TouchableOpacity>
   );
 };
 const mapStateToProps = (state) => {
@@ -138,7 +170,9 @@ const mapStateToProps = (state) => {
     services: state.Service.services,
   };
 };
-export default connect(mapStateToProps, { getServices })(Home);
+export default connect(mapStateToProps, { getServices, getServicesByCategory })(
+  Home
+);
 
 const styles = StyleSheet.create({
   screen: {

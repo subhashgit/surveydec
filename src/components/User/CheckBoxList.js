@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Text, StyleSheet, View } from "react-native";
 import CheckBox from "@react-native-community/checkbox";
-const CheckBoxList = ({ head, array, setArray, label, select, index }) => {
+const CheckBoxList = ({
+  head,
+  array,
+  setArray,
+  label,
+  select,
+  index,
+  state,
+  id,
+}) => {
   useEffect(() => {
     setCheck(false);
   }, [select]);
@@ -13,7 +22,12 @@ const CheckBoxList = ({ head, array, setArray, label, select, index }) => {
   }, []);
   const handleCheckBox = () => {
     setCheck(!check);
-    array.splice(index, 1, { label: label, attributeState: !check });
+    array.splice(index, 1, {
+      label: label,
+      state: state,
+      attributeState: !check,
+      id: id,
+    });
   };
 
   return (

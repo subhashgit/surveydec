@@ -14,9 +14,8 @@ import {
 } from "react-native";
 import { Button } from "native-base";
 import { Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
-import CheckBoxList from "../../components/User/CheckBoxList";
-import LocationImage from "../../../assets/images/location.jpeg";
 import tick from "../../../assets/images/tick.png";
+import Filter from "../../components/User/Filter";
 import { connect } from "react-redux";
 import { serviceProviderInformation } from "../../store/actions/User";
 import {
@@ -24,8 +23,6 @@ import {
   getServiceReview,
 } from "../../store/actions/Services";
 import Rating from "../../components/Generic/Rating";
-// import { TouchableOpacity } from "react-native-gesture-handler";
-import Avatar from "../../../assets/images/user1.jpeg";
 import Maps from "../../components/Generic/Maps";
 import Loader from "../../screens/Auth/Loader";
 import Carousel from "react-native-snap-carousel";
@@ -49,11 +46,6 @@ const ListDetail = ({ ...props }) => {
   let ReviewsList = props.ReviewsList;
   let dataLoader = props.loader;
 
-  const [userReviews, setUserReviews] = useState([]);
-  const [userData, setUserData] = useState({
-    photoUrl: "",
-    Name: "",
-  });
 
   const [information, setInformation] = useState({
     about: "",
@@ -75,7 +67,6 @@ const ListDetail = ({ ...props }) => {
     setReview({ ...Review, service: star });
   };
   const handleReview = () => {
-    console.log("Review", Review);
     addServiceReview(Review, data.id);
     setModalVisible(!modalVisible);
   };
@@ -98,6 +89,11 @@ const ListDetail = ({ ...props }) => {
       setTextVisible(true);
     }
   }, []);
+  const [showFilter, setShowFilter] = useState(false);
+
+  const handleFilter = () => {
+    setShowFilter(!showFilter);
+  };
 
   const renderItem = ({ item }) => {
     return (
@@ -125,315 +121,258 @@ const ListDetail = ({ ...props }) => {
       {dataLoader == false ? (
         <Loader />
       ) : (
-        <ScrollView style={styles.wrapper}>
-          <View style={styles.viewover}>
-            <SafeAreaView style={styles.HeaderContainer}>
-              <View style={styles.headerCategory}>
+        <View>
+          <ScrollView opacity={showFilter ? 0.8 : 1} style={styles.wrapper}>
+            <View style={styles.viewover}>
+              <SafeAreaView style={styles.HeaderContainer}>
+                <View style={styles.headerCategory}>
+                  <MaterialCommunityIcons
+                    style={styles.brief}
+                    onPress={navHandler}
+                    name="arrow-left"
+                  />
+
+                  <Text style={styles.title}>{data.category}</Text>
+                </View>
                 <MaterialCommunityIcons
-                  style={styles.brief}
-                  onPress={navHandler}
-                  name="arrow-left"
+                  style={styles.close}
+                  name="filter-variant"
+                  onPress={handleFilter}
                 />
+                <Entypo name="share" size={30} color={"#fff"} />
+              </SafeAreaView>
+              <Text style={styles.categoryTitle}>{data.serviceName} </Text>
+            </View>
 
-                <Text style={styles.title}>{data.category}</Text>
-              </View>
-              <MaterialCommunityIcons
-                style={styles.close}
-                name="filter-variant"
-              />
-              <Entypo name="share" size={30} color={"#fff"} />
-            </SafeAreaView>
-            <Text style={styles.categoryTitle}>{data.serviceName} </Text>
-          </View>
+            <Carousel
+              layout={"default"}
+              loop={true}
+              data={data.imagesUrl}
+              renderItem={renderItem}
+              sliderWidth={width}
+              sliderHeight={300}
+              itemWidth={width - 30}
+              autoplay={true}
+              activeSlideAlignment={"start"}
+              inactiveSlideScale={1}
+              inactiveSlideOpacity={1}
+              loop={"enableSnap"}
+              activeSlideOffset={0}
+            />
 
-          <Carousel
-            layout={"default"}
-            loop={true}
-            data={data.imagesUrl}
-            renderItem={renderItem}
-            sliderWidth={width}
-            sliderHeight={300}
-            itemWidth={width - 30}
-            autoplay={true}
-            activeSlideAlignment={"start"}
-            inactiveSlideScale={1}
-            inactiveSlideOpacity={1}
-            loop={"enableSnap"}
-            activeSlideOffset={0}
-          />
+            <View style={styles.content}>
+              <Text style={styles.details}>{information.about}</Text>
 
-          <View style={styles.content}>
-            <Text style={styles.details}>{information.about}</Text>
+              <Text style={styles.services}>Services</Text>
 
-            <Text style={styles.services}>Services</Text>
+              {visibleText && (
+                <Text style={{ fontSize: 14, color: "#282828" }}>
+                  No Features for this service
+                </Text>
+              )}
 
-            {visibleText && (
-              <Text style={{ fontSize: 14, color: "#282828" }}>
-                No Features for this service
-              </Text>
-            )}
-
-            <View style={styles.checkboxList}>
-              {data.attributes.map((item, index) => {
-                return (
-                  <View
-                    key={index}
-                    style={{
-                      flexDirection: "row",
-                      paddingTop: 10,
-                      paddingLeft: 0,
-                    }}
-                  >
-                    <Image style={{ width: 20, height: 20 }} source={tick} />
-
-                    <Text
+              <View style={styles.checkboxList}>
+                {data.attributes.map((item, index) => {
+                  return (
+                    <View
+                      key={index}
                       style={{
-                        color: "#282828",
-                        fontSize: 16,
-                        width: 150,
-                        textAlign: "left",
-                        paddingLeft: 10,
+                        flexDirection: "row",
+                        paddingTop: 10,
+                        paddingLeft: 0,
                       }}
                     >
-                      {item.label}
-                    </Text>
-                  </View>
-                );
-              })}
-            </View>
-            <View></View>
+                      <Image style={{ width: 20, height: 20 }} source={tick} />
 
-            <View>
-              <Text style={styles.services}>Location</Text>
+                      <Text
+                        style={{
+                          color: "#282828",
+                          fontSize: 16,
+                          width: 150,
+                          textAlign: "left",
+                          paddingLeft: 10,
+                        }}
+                      >
+                        {item.label}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+              <View></View>
+
               <View>
-                <Maps
-                  userLocation={data.maps}
-                  companyName={data.serviceName}
-                  locationName={data.location}
-                />
+                <Text style={styles.services}>Location</Text>
+                <View>
+                  <Maps
+                    userLocation={data.maps}
+                    companyName={data.serviceName}
+                    locationName={data.location}
+                  />
+                </View>
               </View>
-            </View>
-
-            <View>
-              <View style={styles.titlereviewbtn}>
-                <Text style={styles.services}>Reviews</Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    setModalVisible(true);
-                  }}
-                >
-                  <View style={styles.buttonaddr}>
-                    <Entypo name={"plus"} size={26} />
-                    <Text
-                      style={{ fontSize: 18, paddingLeft: 5, color: "#5c9b84" }}
-                    >
-                      Add
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.review}>
-                <View style={styles.reviewsList}>
-                  {ReviewsList.map((data, index) => (
-                    <View key={index} style={styles.reviewContainer}>
-                      <View style={styles.reviewListHead}>
-                        {/* {data.photoURL !== "" ? (
-                          <Image
-                            style={styles.avatarImage}
-                            source={{ uri: data.photoURL }}
-                          />
-                        ) : (
-                          <Image style={styles.avatarImage} source={Avatar} />
-                        )} 
-                      */}
-                        <View style={{ paddingLeft: 0, flexDirection: "row" }}>
+              <View>
+                <View style={styles.titlereviewbtn}>
+                  <Text style={styles.services}>Reviews</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setModalVisible(true);
+                    }}
+                  >
+                    <View style={styles.buttonaddr}>
+                      <Entypo name={"plus"} size={26} />
+                      <Text
+                        style={{
+                          fontSize: 18,
+                          paddingLeft: 5,
+                          color: "#5c9b84",
+                        }}
+                      >
+                        Add
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.review}>
+                  <View style={styles.reviewsList}>
+                    {ReviewsList.map((data, index) => (
+                      <View key={index} style={styles.reviewContainer}>
+                        <View style={styles.reviewListHead}>
+                          <View
+                            style={{ paddingLeft: 0, flexDirection: "row" }}
+                          >
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontWeight: "bold",
+                                color: "#404145",
+                                marginBottom: 0,
+                              }}
+                            >
+                              {data.Name}
+                            </Text>
+                          </View>
+                        </View>
+                        <View style={styles.reviewContent}>
                           <Text
                             style={{
-                              fontSize: 15,
-                              fontWeight: "bold",
                               color: "#404145",
-                              marginBottom: 0,
+                              paddingTop: 0,
+                              paddingBottom: 15,
                             }}
                           >
-                            {data.Name}
+                            {data.comment}
                           </Text>
-                        </View>
-                      </View>
-                      <View style={styles.reviewContent}>
-                        <Text
-                          style={{
-                            color: "#404145",
-                            paddingTop: 0,
-                            paddingBottom: 15,
-                          }}
-                        >
-                          {data.comment}
-                        </Text>
-                        <View
-                          style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            textAlign: "center",
-                          }}
-                        >
-                          <Entypo
-                            style={{ paddingLeft: 5 }}
-                            name="star"
-                            size={18}
-                            color="#fbbc04"
+                          <View
+                            style={{
+                              display: "flex",
+                              flexDirection: "row",
+                              textAlign: "center",
+                            }}
+                          >
+                            <Entypo
+                              style={{ paddingLeft: 5 }}
+                              name="star"
+                              size={18}
+                              color="#fbbc04"
+                            />
+                            <Text style={{ paddingLeft: 5, color: "#fbbc04" }}>
+                              {data.totalRating}
+                            </Text>
+                          </View>
+                          <View
+                            style={{
+                              borderBottomColor: "#979797",
+                              borderBottomWidth: 1,
+                              marginTop: 10,
+                            }}
                           />
-                          <Text style={{ paddingLeft: 5, color: "#fbbc04" }}>
-                            {data.totalRating}
-                          </Text>
                         </View>
-                        <View
-                          style={{
-                            borderBottomColor: "#979797",
-                            borderBottomWidth: 1,
-                            marginTop: 10,
-                          }}
-                        />
                       </View>
-                    </View>
-                  ))}
+                    ))}
+                  </View>
                 </View>
               </View>
             </View>
-          </View>
 
-          <Modal animationType="fade" transparent={true} visible={modalVisible}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <TouchableHighlight
-                  style={{
-                    textAlign: "right",
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "flex-end",
-                    background: "#555",
-                  }}
-                  onPress={() => {
-                    setModalVisible(!modalVisible);
-                  }}
-                >
-                  <Text>Close</Text>
-                </TouchableHighlight>
-
-                {/*
-                    <View style={styles.ratingBox}>
-                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-                        Value of Money
-                      </Text>
-                      <View style={{ flexDirection: "row" }}>
-                        {stars.map((x, index) => (
-                          <TouchableOpacity
-                            key={x}
-                            onPress={() => handleRatingMoney(x)}
-                          >
-                            <Rating
-                              filled={x <= Review.valueOfMoney ? true : false}
-                              stars={stars}
-                              size={20}
-                              key={x}
-                            />
-                          </TouchableOpacity>
-                        ))}
-                      </View>
-                    </View>
-                    <View style={styles.ratingBox}>
-                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-                        Professionalism
-                      </Text>
-                      <View style={{ flexDirection: "row" }}>
-                        {stars.map((x, index) => (
-                          <TouchableOpacity
-                            key={x}
-                            onPress={() => handleRatingProfessionalism(x)}
-                          >
-                            <Rating
-                              filled={
-                                x <= Review.professionalism ? true : false
-                              }
-                              stars={stars}
-                              size={20}
-                              key={x}
-                            />
-                          </TouchableOpacity>
-                        ))}
-                      </View>
-                    </View>
-                    <View style={styles.ratingBox}>
-                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-                        Presentaion
-                      </Text>
-                      <View style={{ flexDirection: "row" }}>
-                        {stars.map((x, index) => (
-                          <TouchableOpacity
-                            key={x}
-                            onPress={() => handleRatingPresentaion(x)}
-                          >
-                            <Rating
-                              filled={x <= Review.presentaion ? true : false}
-                              stars={stars}
-                              size={20}
-                              key={x}
-                            />
-                          </TouchableOpacity>
-                        ))}
-                      </View>
-                    </View>
-                  </View>
-                */}
-                <View style={{ paddingTop: 20, width: "100%" }}>
-                  <Text style={{ paddingLeft: 0, paddingBottom: 5 }}>
-                    Add a Review
-                  </Text>
-                  <TextInput
-                    paddingVertical={0}
-                    minHeight={100}
-                    multiline={true}
-                    numberOfLines={20}
-                    maxLength={300}
-                    placeholder="What was your experience"
-                    style={styles.input}
-                    onChangeText={(text) =>
-                      setReview({ ...Review, comment: text })
-                    }
-                  />
-                  <View style={styles.rating}>
-                    <View style={styles.ratingBox}>
-                      <Text style={{ fontSize: 15, fontWeight: "bold" }}>
-                        Rate the Service
-                      </Text>
-                      <Text style={{ fontSize: 15 }}>
-                        Quality of customer service
-                      </Text>
-                      <View style={{ flexDirection: "row", marginTop: 20 }}>
-                        {stars.map((x, index) => (
-                          <TouchableOpacity
-                            style={{}}
-                            key={index}
-                            onPress={() => handleRatingService(x)}
-                          >
-                            <Rating
-                              filled={x <= Review.service ? true : false}
-                              name="Service"
-                              size={40}
+            <Modal
+              animationType="fade"
+              transparent={true}
+              visible={modalVisible}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <TouchableHighlight
+                    style={{
+                      textAlign: "right",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "flex-end",
+                      background: "#555",
+                    }}
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    <Text>Close</Text>
+                  </TouchableHighlight>
+                  <View style={{ paddingTop: 20, width: "100%" }}>
+                    <Text style={{ paddingLeft: 0, paddingBottom: 5 }}>
+                      Add a Review
+                    </Text>
+                    <TextInput
+                      paddingVertical={0}
+                      minHeight={100}
+                      multiline={true}
+                      numberOfLines={20}
+                      maxLength={300}
+                      placeholder="What was your experience"
+                      style={styles.input}
+                      onChangeText={(text) =>
+                        setReview({ ...Review, comment: text })
+                      }
+                    />
+                    <View style={styles.rating}>
+                      <View style={styles.ratingBox}>
+                        <Text style={{ fontSize: 15, fontWeight: "bold" }}>
+                          Rate the Service
+                        </Text>
+                        <Text style={{ fontSize: 15 }}>
+                          Quality of customer service
+                        </Text>
+                        <View style={{ flexDirection: "row", marginTop: 20 }}>
+                          {stars.map((x, index) => (
+                            <TouchableOpacity
+                              style={{}}
                               key={index}
-                            />
-                          </TouchableOpacity>
-                        ))}
+                              onPress={() => handleRatingService(x)}
+                            >
+                              <Rating
+                                filled={x <= Review.service ? true : false}
+                                name="Service"
+                                size={40}
+                                key={index}
+                              />
+                            </TouchableOpacity>
+                          ))}
+                        </View>
                       </View>
                     </View>
+                    <Button onPress={handleReview} full style={styles.buttons}>
+                      <Text style={styles.buttonstxt}>Add</Text>
+                    </Button>
                   </View>
-                  <Button onPress={handleReview} full style={styles.buttons}>
-                    <Text style={styles.buttonstxt}>Add</Text>
-                  </Button>
                 </View>
               </View>
-            </View>
-          </Modal>
-        </ScrollView>
+            </Modal>
+          </ScrollView>
+          <Filter
+            route={props.route}
+            navigation={navigation}
+            setShowFilter={setShowFilter}
+            modalVisible={showFilter}
+          />
+        </View>
       )}
     </>
   );

@@ -14,16 +14,6 @@ const UserHome = () => {
           headerShown: false,
         }}
         initialParams={{
-          checkVisible: true,
-        }}
-        name="Provider"
-        component={ProviderTabs}
-      />
-      <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
-        initialParams={{
           checkVisible: false,
         }}
         name="Guest"

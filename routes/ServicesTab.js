@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import ServicesHome from "../src/screens/User/Home";
 import AddService from "../src/screens/User/AddService";
 import { createStackNavigator } from "@react-navigation/stack";
+import Services from "../src/screens/User/Services";
 import ListDetail from "../src/screens/User/ListDetail";
 import Notification from "../src/screens/User/Notification";
-import Account from "./AccountTab";
+
 const Stack = createStackNavigator();
 
 const ServicesTab = () => {
@@ -16,6 +17,7 @@ const ServicesTab = () => {
         }}
         name="ServicesHome"
         component={ServicesHome}
+        initialParams={{ key: 1 }}
       />
       <Stack.Screen
         options={{
@@ -31,13 +33,13 @@ const ServicesTab = () => {
         name="ListDetail"
         component={ListDetail}
       />
-      {/* <Stack.Screen
+      <Stack.Screen
         options={{
           headerShown: false,
         }}
-        name="MyAccount"
-        component={Account}
-      /> */}
+        name="Services"
+        component={Services}
+      />
       <Stack.Screen name="Notification" component={Notification} />
     </Stack.Navigator>
   );
