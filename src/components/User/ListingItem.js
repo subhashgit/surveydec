@@ -7,13 +7,26 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import Rating from "../Generic/Rating";
 import { LinearGradient } from "expo-linear-gradient";
 import bg from "../../../assets/images/bg.png";
-
+import { connect } from "react-redux";
+import { getDistance, getPreciseDistance } from "geolib";
 const stars = [1, 2, 3, 4, 5];
-const ListingItem = ({ data, navigation, pad }) => {
+const ListingItem = ({
+  data,
+  navigation,
+  pad,
+  userLocation,
+  initialDistance,
+}) => {
   const [serviceImage, setServiceImage] = useState({
     image: "",
     state: false,
   });
+  const [compDistance, setCompDistace] = useState(10);
+
+  useEffect(() => {
+    setCompDistace(initialDistance);
+  }, [initialDistance]);
+  const [distance, setDistance] = useState(0);
   useEffect(() => {
     if (data.imagesUrl !== []) {
       setServiceImage({
@@ -23,70 +36,98 @@ const ListingItem = ({ data, navigation, pad }) => {
       });
     }
   }, [data.imagesUrl]);
-  // serviceImage.state === true ? serviceImage.image : bg
+  useEffect(() => {
+    if (userLocation) {
+      setDistance(
+        getPreciseDistance(
+          {
+            latitude: userLocation.coords.latitude,
+            longitude: userLocation.coords.longitude,
+          },
+          {
+            latitude: data.maps.coords.latitude,
+            longitude: data.maps.coords.longitude,
+          }
+        )
+      );
+    }
+  }, [data, userLocation]);
   return (
-    <TouchableOpacity
-      activeOpacity={1}
-      onPress={() => {
-        navigation.navigate("ListDetail", {
-          data: data,
-          key: data.id,
-        });
-      }}
-    >
-      <View style={{ paddingBottom: 20, paddingLeft: pad, paddingRight: pad }}>
-        <Card style={{ height: 280 }}>
-          <ImageBackground
-            style={{ flex: 1 }}
-            source={
-              serviceImage.state === true ? { uri: serviceImage.image } : bg
-            }
+    <>
+      {distance <= compDistance && (
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => {
+            navigation.navigate("ListDetail", {
+              data: data,
+              key: data.id,
+            });
+          }}
+        >
+          <View
+            style={{ paddingBottom: 20, paddingLeft: pad, paddingRight: pad }}
           >
-            <LinearGradient
-              colors={["rgba(0,0,0,0.5)", "transparent"]}
-              style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                top: 0,
-                height: 300,
-              }}
-            >
-              <Text style={{ padding: 20, color: "#fff", fontSize: 18 }}>
-                {data.serviceName}
-              </Text>
-            </LinearGradient>
-          </ImageBackground>
-          <Card.Content style={{ flexDirection: "row", padding: 20 }}>
-            <FontAwesome
-              style={{ fontSize: 30, paddingTop: 10 }}
-              name="briefcase"
-            />
-            <Card.Content style={{ fontSize: 20 }}>
-              <Paragraph>{data.category} </Paragraph>
-              <Card.Content style={{ paddingLeft: 0, flexDirection: "row" }}>
-                <View style={{ flexDirection: "row" }}>
-                  {stars.map((x, index) => (
-                    <TouchableOpacity key={x}>
-                      <Rating
-                        filled={x <= data.averageRating ? true : false}
-                        name="Service"
-                        size={16}
-                        key={x}
-                      />
-                    </TouchableOpacity>
-                  ))}
-                </View>
-                <Paragraph style={{ paddingLeft: 5 }}>
-                  Reviews ({data.totalReviews})
-                </Paragraph>
+            <Card style={{ height: 280 }}>
+              <ImageBackground
+                style={{ flex: 1 }}
+                source={
+                  serviceImage.state === true ? { uri: serviceImage.image } : bg
+                }
+              >
+                <LinearGradient
+                  colors={["rgba(0,0,0,0.5)", "transparent"]}
+                  style={{
+                    position: "absolute",
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    height: 300,
+                  }}
+                >
+                  <Text style={{ padding: 20, color: "#fff", fontSize: 18 }}>
+                    {data.serviceName}
+                  </Text>
+                </LinearGradient>
+              </ImageBackground>
+              <Card.Content style={{ flexDirection: "row", padding: 20 }}>
+                <FontAwesome
+                  style={{ fontSize: 30, paddingTop: 10 }}
+                  name="briefcase"
+                />
+                <Card.Content style={{ fontSize: 20 }}>
+                  <Paragraph>{data.category} </Paragraph>
+                  <Card.Content
+                    style={{ paddingLeft: 0, flexDirection: "row" }}
+                  >
+                    <View style={{ flexDirection: "row" }}>
+                      {stars.map((x, index) => (
+                        <TouchableOpacity key={x}>
+                          <Rating
+                            filled={x <= data.averageRating ? true : false}
+                            name="Service"
+                            size={16}
+                            key={x}
+                          />
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                    <Paragraph style={{ paddingLeft: 5 }}>
+                      Reviews ({data.totalReviews})
+                    </Paragraph>
+                  </Card.Content>
+                </Card.Content>
               </Card.Content>
-            </Card.Content>
-          </Card.Content>
-        </Card>
-      </View>
-    </TouchableOpacity>
+            </Card>
+          </View>
+        </TouchableOpacity>
+      )}
+    </>
   );
 };
-
-export default ListingItem;
+const mapStateToProps = (state) => {
+  return {
+    userLocation: state.location.userLocation,
+    initialDistance: state.location.initialDistance,
+  };
+};
+export default connect(mapStateToProps)(ListingItem);

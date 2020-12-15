@@ -20,6 +20,8 @@ import { Menu, Divider, Provider } from "react-native-paper";
 import { connect } from "react-redux";
 import { getAdminCategory } from "../../store/actions/Category";
 import FeaturesSelect from "./Features";
+import { distanceRadius } from "../../store/actions/Location";
+import { set } from "react-native-reanimated";
 let deviceWidth = Dimensions.get("window").width;
 let deviceHeight = Dimensions.get("window").height;
 
@@ -29,6 +31,8 @@ const Filter = ({ ...props }) => {
   let getAdminCategory = props.getAdminCategory;
   let categories = props.categories;
   let navigation = props.navigation;
+  let distanceRadius  = props.distanceRadius;
+  let initialDistance = props.initialDistance;
 
   const [key, setKey] = useState(1);
 
@@ -36,7 +40,7 @@ const Filter = ({ ...props }) => {
     setKey(navigation.dangerouslyGetState().routes[0].params.key);
   }, [navigation]);
 
-  const [distance, setDistance] = useState(10);
+  const [distance, setDistance] = useState(initialDistance);
   const [categoriesList, setCategoriesList] = useState([]);
   const [visible, setVisible] = useState(false);
   const [categoryVisible, setCategoryVisible] = useState(true);
@@ -78,7 +82,6 @@ const Filter = ({ ...props }) => {
     setAll(false);
   };
   const handleFilter = () => {
-    console.log("Homee");
     if (key === 1) {
       navigation.navigate("ServicesHome", {
         id: 2,
@@ -87,7 +90,6 @@ const Filter = ({ ...props }) => {
       setShowFilter(!modalVisible);
     }
     if (key === 0) {
-      console.log("Servicess");
       navigation.navigate("Services", {
         id: 2,
         state: state,
@@ -111,6 +113,14 @@ const Filter = ({ ...props }) => {
       setShowFilter(!modalVisible);
     }
   };
+  const handleDistance = (e) => {
+    setDistance(e);
+    console.log("ee",e)
+    props.distanceRadius(e);
+  };
+  useEffect(() => {
+    console.log("Distance", distance);
+  }, [distance]);
 
   return (
     <KeyboardAvoidingView enabled={true}>
@@ -203,7 +213,7 @@ const Filter = ({ ...props }) => {
                       <Text style={styles.distance}>{distance} km </Text>
                     </View>
                     <Slider
-                      onValueChange={(e) => setDistance(e)}
+                      onValueChange={(e) => handleDistance(e)}
                       style={{ height: 10, paddingTop: 50, flex: 1 }}
                       minimumValue={0}
                       maximumValue={1000}
@@ -300,9 +310,12 @@ const Filter = ({ ...props }) => {
 const mapStateToProps = (state) => {
   return {
     categories: state.category.adminCollection,
+    initialDistance: state.location.initialDistance,
   };
 };
-export default connect(mapStateToProps, { getAdminCategory })(Filter);
+export default connect(mapStateToProps, { getAdminCategory, distanceRadius })(
+  Filter
+);
 
 const styles = StyleSheet.create({
   centeredView: {

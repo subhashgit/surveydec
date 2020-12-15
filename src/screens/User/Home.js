@@ -5,7 +5,7 @@ import {
   View,
   Image,
   TouchableOpacity,
-  PermissionsAndroid
+  PermissionsAndroid,
 } from "react-native";
 import Header from "../../components/User/Header";
 import ListingItem from "../../components/User/ListingItem";
@@ -48,10 +48,10 @@ const Home = ({ ...props }) => {
   let navigation = props.navigation;
   let getServices = props.getServices;
   let getServicesByCategory = props.getServicesByCategory;
+
   const [showFilter, setShowFilter] = useState(false);
   useEffect(() => {
     getServices();
-
   }, []);
   const handleFilter = () => {
     setShowFilter(!showFilter);
@@ -168,6 +168,7 @@ const Home = ({ ...props }) => {
 const mapStateToProps = (state) => {
   return {
     services: state.Service.services,
+    userLocation: state.location.userLocation,
   };
 };
 export default connect(mapStateToProps, { getServices, getServicesByCategory })(
@@ -190,11 +191,10 @@ const styles = StyleSheet.create({
 
   listoption: {
     alignItems: "center",
-
     flexDirection: "row",
-    width: 170,
+    width: 140,
     height: 80,
-    marginRight: 15,
+    marginRight: 0,
     marginLeft: 15,
     backgroundColor: "#fff",
     padding: 10,
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   listtxt: {
     flex: 1,
     flexWrap: "wrap",
-    fontSize: 18,
+    fontSize: 14,
     color: "#fff",
   },
   bannercont: {

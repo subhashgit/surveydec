@@ -3,10 +3,11 @@ import { Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import * as Location from "expo-location";
 import Maps from "../Generic/Maps";
+import { MaterialIcons } from "@expo/vector-icons";
+
 import { styles } from "../../styles/User/AddServiceStyle";
 
 const ServiceLocation = ({ userLocation, setUserLocation, state }) => {
-
   const _getLocation = async () => {
     let { status } = await Location.requestPermissionsAsync();
     if (status !== "granted") {
@@ -36,7 +37,12 @@ const ServiceLocation = ({ userLocation, setUserLocation, state }) => {
   return (
     <View style={{ paddingTop: 20 }}>
       <TouchableOpacity style={styles.inputContainer} onPress={handleMaps}>
-        <Text style={styles.input}>Maps</Text>
+        <MaterialIcons
+          size={25}
+          style={{ position: "absolute", top: 12, left: 6 }}
+          name="location-on"
+        />
+        <Text style={styles.inputfml}>Find my location</Text>
       </TouchableOpacity>
       <View style={{ paddingTop: 20 }}>
         {userLocation.maps ? (

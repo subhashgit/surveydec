@@ -5,6 +5,7 @@ import AdminReducer from "./AdminReducer";
 import UserReducer from "./UserReducer";
 import categoryReducer from "./CategoryReducer";
 import ProfileReducer from "./ProfileReducer";
+import LocationReducer from "./locationReducer";
 export default combineReducers({
   Auth: AuthReducer,
   Service: ServiceReducer,
@@ -12,4 +13,5 @@ export default combineReducers({
   User: UserReducer,
   category: categoryReducer,
   profile: ProfileReducer,
+  location: LocationReducer,
 });

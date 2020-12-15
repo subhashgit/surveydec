@@ -2,8 +2,7 @@ import React, { useState, useEffect } from "react";
 import MapView from "react-native-maps";
 import { StyleSheet, Text, View, Dimensions } from "react-native";
 
-const Maps = ({ userLocation ,  companyName ,locationName}) => {
-  // let userLocation = userLocation.locationCords
+const Maps = ({ userLocation, companyName, locationName }) => {
   const [state, setState] = useState({
     userLatitude: 0,
     userLongitude: 0,
@@ -29,6 +28,7 @@ const Maps = ({ userLocation ,  companyName ,locationName}) => {
           latitudeDelta: 0.1,
           longitudeDelta: 0.1,
         }}
+        showsUserLocation={true}
         style={styles.mapStyle}
       >
         <MapView.Marker
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   mapStyle: {
-    width: '100%',
+    width: "100%",
     height: 200,
   },
 });

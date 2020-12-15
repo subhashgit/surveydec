@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Text, View, Animated, KeyboardAvoidingView } from "react-native";
 import Input from "../../components/Generic/Input";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Entypo } from "@expo/vector-icons";
 import CheckBoxList from "../../components/User/CheckBoxList";
 import { styles } from "../../styles/User/AddServiceStyle";
 import { AddNewService } from "../../store/actions/Services";
@@ -133,7 +133,7 @@ const AddService = ({
             )}
 
             <TouchableOpacity onPress={handleInfo} style={styles.btn}>
-              <Text>save</Text>
+              <Text>Save & Exit</Text>
             </TouchableOpacity>
           </View>
           <Animated.ScrollView showsVerticalScrollIndicator={false}>
@@ -201,22 +201,35 @@ const AddService = ({
                 </View>
                 <View>
                   <View
-                    style={{ flexDirection: "row", justifyContent: "flex-end" }}
-                  >
+                    style={styles.nfbtn}
+                  > 
+                  <Text
+                        style={{
+                          textAlign: "left",
+                          paddingTop:10,
+                          paddingLeft:5,
+                          width:250,
+                          color: "#000",
+                          fontSize: 15,
+                        }}
+                      >
+                        New Features
+                      </Text>
                     <Button
                       style={styles.showFeatures}
                       onPress={showFeature}
                       full
                     >
-                      <AntDesign name="plus" color={"#000"} fontSize={12} />
+                      <Entypo name="plus" color={"#000"} size={20} />
                       <Text
                         style={{
                           textAlign: "center",
+                          paddingLeft:8,
                           color: "#000",
-                          fontSize: 12,
+                          fontSize: 15,
                         }}
                       >
-                        New Feature
+                        Add
                       </Text>
                     </Button>
                   </View>
