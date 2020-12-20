@@ -3,7 +3,7 @@ import {
   StyleSheet,
   ScrollView,
   View,
-  Image,
+  Image,ActivityIndicator, FlatList,
   TouchableOpacity,
   PermissionsAndroid,
 } from "react-native";
@@ -18,6 +18,7 @@ import {
 import Filter from "../../components/User/Filter";
 import { FontAwesome, MaterialCommunityIcons } from "@expo/vector-icons";
 
+ 
 const items = [
   {
     key: String(Math.random()),
@@ -71,6 +72,15 @@ const Home = ({ ...props }) => {
       getServices();
     }
   }, [props.route]);
+   const [isLoading, setLoading] = useState(true);
+   const [data, setData] = useState([]);
+useEffect(() => {
+    fetch('https://webrabbit.in/survey/banner-content.php')
+      .then((response) => response.json())
+       .then((json) => setData(json.content))
+      .catch((error) => console.error(error))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <TouchableOpacity onPress={() => setShowFilter(false)} activeOpacity={1}>
@@ -131,10 +141,15 @@ const Home = ({ ...props }) => {
           </View>
 
           <View style={styles.bannercont}>
+           {isLoading ? <ActivityIndicator/> : (
+                <FlatList
+                  data={data}
+                  keyExtractor={({ id }, index) => id}
+                  renderItem={({ item }) => (
             <View style={styles.bannerdetail}>
-              <Text style={styles.bannertitle}>Lorem Ipsum Dior almet</Text>
+              <Text style={styles.bannertitle}>{item.title}</Text>
 
-              <Text style={styles.bannerdescription}>Lorem Ipsum</Text>
+              <Text style={styles.bannerdescription}>{item.content}</Text>
               <View style={styles.bannerbuttontok}>
                 <TouchableOpacity
                   style={styles.loginScreenButton}
@@ -148,7 +163,9 @@ const Home = ({ ...props }) => {
                 </TouchableOpacity>
               </View>
             </View>
-
+ )}
+                />
+              )}
             <Image
               style={styles.bannerimg}
               source={require("../../../assets/images/13.png")}
