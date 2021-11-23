@@ -6,10 +6,13 @@ import Loader from "../src/screens/Auth/Loader";
 import { connect } from "react-redux";
 import { Authorization } from "../src/store/actions/Auth";
 import { profileInformation } from "../src/store/actions/User";
+import AddService from "../src/screens/User/AddService";
+import BookingScreen from "../src/screens/User/BookingScreen";
 
 const Stack = createStackNavigator();
 
 const Authority = ({ type, Authorization, authCheck, profileInformation }) => {
+  const [userType, setUserType] = useState("");
   useEffect(() => {
     Authorization();
   }, []);
@@ -18,13 +21,17 @@ const Authority = ({ type, Authorization, authCheck, profileInformation }) => {
     profileInformation();
   }, [authCheck]);
 
+  useEffect(() => {
+    setUserType(type);
+  }, [type]);
+
   return (
     <>
       {authCheck ? (
         <Loader />
       ) : (
         <>
-          {type == "admin" ? (
+          {userType !== "" && userType == "admin" ? (
             <Stack.Navigator initialRouteName="admin">
               <Stack.Screen
                 options={{
@@ -32,6 +39,13 @@ const Authority = ({ type, Authorization, authCheck, profileInformation }) => {
                 }}
                 name="admin"
                 component={Admin}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="AddService"
+                component={AddService}
               />
             </Stack.Navigator>
           ) : (
@@ -42,6 +56,13 @@ const Authority = ({ type, Authorization, authCheck, profileInformation }) => {
                 }}
                 name="user"
                 component={UserHome}
+              />
+              <Stack.Screen
+                options={{
+                  headerShown: false,
+                }}
+                name="booking"
+                component={BookingScreen}
               />
             </Stack.Navigator>
           )}

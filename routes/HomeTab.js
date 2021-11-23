@@ -1,36 +1,26 @@
 import React from "react";
+import ServicesHome from "../src/screens/User/Home";
 import AddService from "../src/screens/User/AddService";
 import { createStackNavigator } from "@react-navigation/stack";
-import Bookings from "../src/screens/User/Bookings";
+import Services from "../src/screens/User/Services";
 import ListDetail from "../src/screens/User/ListDetail";
 import Notification from "../src/screens/User/Notification";
 import SearchResult from "../src/screens/User/SearchResult";
-import Services from "../src/screens/User/Services";
-import { connect } from "react-redux";
+import Search from "../src/screens/User/search";
+import ProviderBookings from "../src/screens/User/ProviderBookings";
 const Stack = createStackNavigator();
 
-const ServicesTab = ({ checkVisible }) => {
+const HomeTab = () => {
   return (
-    <Stack.Navigator initialRouteName="Services">
-      {checkVisible ? (
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="Services"
-          component={Services}
-          initialParams={{ key: 0 }}
-        />
-      ) : (
-        <Stack.Screen
-          options={{
-            headerShown: false,
-          }}
-          name="Services"
-          component={Bookings}
-          initialParams={{ key: 0 }}
-        />
-      )}
+    <Stack.Navigator initialRouteName="ServicesHome">
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="ServicesHome"
+        component={ServicesHome}
+        initialParams={{ key: 1 }}
+      />
       <Stack.Screen
         options={{
           headerShown: false,
@@ -49,18 +39,31 @@ const ServicesTab = ({ checkVisible }) => {
         options={{
           headerShown: false,
         }}
+        name="Services"
+        component={Services}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name="SearchResult"
         component={SearchResult}
         initialParams={{ key: 4 }}
       />
+       <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name="Search"
+        component={Search}
 
+      />
+      <Stack.Screen
+        name="ProviderBookings"
+        component={ProviderBookings}
+      />
       <Stack.Screen name="Notification" component={Notification} />
     </Stack.Navigator>
   );
 };
-const mapStateToProps = (state) => {
-  return {
-    checkVisible: state.User.status,
-  };
-};
-export default connect(mapStateToProps)(ServicesTab);
+export default HomeTab;
