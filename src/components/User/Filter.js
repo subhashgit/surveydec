@@ -6,22 +6,15 @@ import {
   Dimensions,
   TouchableOpacity,
   Modal,
-  FlatList,
-  TouchableHighlight,
   KeyboardAvoidingView,
 } from "react-native";
-import {
-  MaterialCommunityIcons,
-  MaterialIcons,
-  Entypo,
-} from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
-import { Menu, Divider, Provider } from "react-native-paper";
 import { connect } from "react-redux";
 import { getAdminCategory } from "../../store/actions/Category";
 import FeaturesSelect from "./Features";
 import { distanceRadius } from "../../store/actions/Location";
-import { set } from "react-native-reanimated";
+import { Picker } from "@react-native-picker/picker";
 let deviceWidth = Dimensions.get("window").width;
 let deviceHeight = Dimensions.get("window").height;
 
@@ -31,96 +24,44 @@ const Filter = ({ ...props }) => {
   let getAdminCategory = props.getAdminCategory;
   let categories = props.categories;
   let navigation = props.navigation;
-  let distanceRadius  = props.distanceRadius;
-  let initialDistance = props.initialDistance;
 
-  const [key, setKey] = useState(1);
-
-  useEffect(() => {
-    setKey(navigation.dangerouslyGetState().routes[0].params.key);
-  }, [navigation]);
-
-  const [distance, setDistance] = useState(initialDistance);
+  const [distance, setDistance] = useState(props.initialDistance);
   const [categoriesList, setCategoriesList] = useState([]);
-  const [visible, setVisible] = useState(false);
-  const [categoryVisible, setCategoryVisible] = useState(true);
-  const [locationVisible, setLocationVisible] = useState(false);
-  const [featuresVisible, setFeaturesVisible] = useState(false);
-
-  useEffect(() => {
-    setCategoriesList(categories);
-  }, [props.categories]);
+  const [attributes, setAttributes] = useState([]);
+  const [state, setState] = useState("");
 
   useEffect(() => {
     getAdminCategory();
   }, []);
-  const openMenu = () => setVisible(true);
-  const handleCategoryVisible = () => {
-    setLocationVisible(false);
-    setFeaturesVisible(false);
-    setCategoryVisible(true);
-    setVisible(false);
-  };
-  const handleLocationVisible = () => {
-    setFeaturesVisible(false);
-    setCategoryVisible(false);
-    setLocationVisible(true);
-    setVisible(false);
-  };
-  const handleFeaturesVisible = () => {
-    setLocationVisible(false);
-    setCategoryVisible(false);
-    setFeaturesVisible(true);
-    setVisible(false);
-  };
-  const [state, setState] = useState("");
-  const [allVisible, setAll] = useState(false);
-  const closeMenu = () => setVisible(false);
+
+  useEffect(() => {
+    setCategoriesList(categories);
+    categories.forEach((e, index) => {
+      if (index === 0) {
+        setState(e);
+      }
+    });
+  }, [categories]);
 
   const handleCategory = (data) => {
-    setState(data.label);
-    setAll(false);
+    setState(data);
   };
   const handleFilter = () => {
-    if (key === 1) {
-      navigation.navigate("ServicesHome", {
-        id: 2,
-        state: state,
-      });
-      setShowFilter(!modalVisible);
-    }
-    if (key === 0) {
-      navigation.navigate("Services", {
-        id: 2,
-        state: state,
-      });
-      setShowFilter(!modalVisible);
-    }
+    setShowFilter(!modalVisible);
+    navigation.navigate("SearchResult", {
+      id: 2,
+      state: state.label,
+      attributes: attributes,
+    });
   };
   const handleClear = () => {
-    if (key === 1) {
-      navigation.navigate("ServicesHome", {
-        id: 3,
-        state: state,
-      });
-      setShowFilter(!modalVisible);
-    }
-    if (key === 0) {
-      navigation.navigate("Services", {
-        id: 3,
-        state: state,
-      });
-      setShowFilter(!modalVisible);
-    }
+    setShowFilter(!modalVisible);
+    navigation.navigate("SearchResult", {
+      id: 3,
+      state: "",
+      attributes: [],
+    });
   };
-  const handleDistance = (e) => {
-    setDistance(e);
-    console.log("ee",e)
-    props.distanceRadius(e);
-  };
-  useEffect(() => {
-    console.log("Distance", distance);
-  }, [distance]);
 
   return (
     <KeyboardAvoidingView enabled={true}>
@@ -133,161 +74,78 @@ const Filter = ({ ...props }) => {
             setShowFilter(false);
           }}
         >
+          <TouchableOpacity
+            onPress={() => setShowFilter(!modalVisible)}
+            style={styles.transparent}
+          ></TouchableOpacity>
           <View style={styles.filterWrapper}>
+            <View
+              style={{
+                padding: 10,
+                paddingRight: 15,
+                paddingLeft: 15,
+                flexDirection: "row",
+
+              }}
+            >
+              <MaterialCommunityIcons
+                style={styles.filter}
+                name="filter-variant"
+              />
+              <Text>Filter</Text>
+            </View>
             <View style={styles.filterInner}>
-              <Provider>
-                <View
-                  style={{
-                    paddingTop: 0,
-                    flexDirection: "row",
-                    margin: 0,
-                    padding: 0,
-                    justifyContent: "flex-start",
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    zIndex: 1,
-                    flex: 1,
-                  }}
-                >
-                  <Menu
-                    style={{
-                      position: "absolute",
-                      top: 50,
-                      left: 15,
-                      flexDirection: "row",
-                      zIndex: 1,
-                    }}
-                    visible={visible}
-                    onDismiss={closeMenu}
-                    anchor={
-                      <TouchableOpacity
-                        style={styles.filterHeader}
-                        onPress={openMenu}
-                      >
-                        <MaterialCommunityIcons
-                          style={styles.filter}
-                          name="filter-variant"
-                        />
-                        <Text style={styles.headerText}>
-                          Filter By {categoryVisible && <Text>Category</Text>}
-                          {locationVisible && <Text>Location</Text>}
-                          {featuresVisible && <Text>Features</Text>}
-                        </Text>
-                      </TouchableOpacity>
-                    }
-                  >
-                    <Menu.Item
-                      onPress={handleCategoryVisible}
-                      style={{ zIndex: 1 }}
-                      title="Categories"
-                    />
-                    <Divider />
-                    <Menu.Item
-                      onPress={handleLocationVisible}
-                      style={{ zIndex: 1 }}
-                      title="Location"
-                    />
-                    <Divider />
-                    <Menu.Item
-                      onPress={handleFeaturesVisible}
-                      style={{ zIndex: 1 }}
-                      title="Features"
-                    />
-                  </Menu>
-                </View>
-              </Provider>
-              <View
-                style={{ position: "absolute", top: 80, left: 15, flex: 1 }}
-              >
-                {locationVisible && (
-                  <View
-                    style={{
-                      zIndex: -1,
-                      width: 300,
-                    }}
-                  >
-                    <View style={styles.filterLocation}>
-                      <MaterialIcons style={styles.filter} name="location-on" />
-                      <Text style={styles.headerText}>Distance</Text>
-                      <Text style={styles.distance}>{distance} km </Text>
-                    </View>
-                    <Slider
-                      onValueChange={(e) => handleDistance(e)}
-                      style={{ height: 10, paddingTop: 50, flex: 1 }}
-                      minimumValue={0}
-                      maximumValue={1000}
-                      minimumTrackTintColor="#488d4b"
-                      maximumTrackTintColor="#a9a9a9"
-                    />
+              <View style={styles.filterCategory}>
+                <View>
+                  <View style={styles.filterLocation}>
+                    <MaterialIcons style={styles.filter} name="location-on" />
+                    <Text style={styles.headerText}>Distance</Text>
+                    <Text style={styles.distance}>{distance} Mile </Text>
                   </View>
-                )}
-              </View>
-              {categoryVisible && (
-                <View style={styles.filterCategory}>
-                  <FlatList
-                    style={{ height: 200 }}
-                    data={categoriesList}
-                    renderItem={(data, index) => {
-                      return (
-                        <TouchableHighlight
-                          underlayColor="#eee"
-                          onPress={() => handleCategory(data.item)}
-                        >
-                          <View
-                            style={{
-                              padding: 10,
-                              flexDirection: "row",
-                              marginTop: 5,
-                              backgroundColor:
-                                data.item.label === state ? "#eee" : "#fff",
-                            }}
-                          >
-                            <MaterialCommunityIcons
-                              size={25}
-                              name="hand"
-                              style={{ marginRight: 30 }}
-                            />
-                            <Text style={{ color: "#000", fontSize: 18 }}>
-                              {data.item.label}{" "}
-                            </Text>
-                          </View>
-                        </TouchableHighlight>
-                      );
-                    }}
+                  <Slider
+                    onSlidingComplete={() => props.distanceRadius(distance)}
+                    onValueChange={(e) => setDistance(e)}
+                    style={{ height: 10, paddingTop: 50, flex: 1 }}
+                    minimumValue={1}
+                    value={distance}
+                    maximumValue={1000}
+                    minimumTrackTintColor="#488d4b"
+                    maximumTrackTintColor="#a9a9a9"
                   />
                 </View>
-              )}
-              {featuresVisible && (
+                <Picker
+                  selectedValue={state}
+                  style={{ width: deviceWidth - 50, paddingLeft: 50 }}
+                  enabled={true}
+                  itemStyle={{ paddingLeft: 50, backgroundColor: "red" }}
+                  prompt={"Service Category"}
+                  onValueChange={(itemValue, itemIndex) =>
+                    handleCategory(itemValue)
+                  }
+                >
+                  {categoriesList.map((item, index) => (
+                    <Picker.Item
+                      itemStyle={{ paddingLeft: 100, backgroundColor: "red" }}
+                      label={item.label}
+                      value={item}
+                      key={index}
+                    />
+                  ))}
+                </Picker>
                 <View
                   style={{
                     backgroundColor: "red",
-                    position: "absolute",
-                    top: 50,
-                    left: 15,
                     marginTop: 20,
                     zIndex: -1,
                     width: deviceWidth - 50,
                   }}
                 >
-                  <FeaturesSelect categories={categoriesList} />
+                  <FeaturesSelect
+                    featuresSelect={state}
+                    setAttributes={setAttributes}
+                    attributes={attributes}
+                  />
                 </View>
-              )}
-              <View
-                style={{
-                  position: "absolute",
-                  top: 20,
-                  right: 10,
-                  flexDirection: "row",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <Entypo
-                  onPress={() => setShowFilter(!modalVisible)}
-                  size={25}
-                  color="#000"
-                  name="cross"
-                />
               </View>
 
               <View style={styles.btn}>
@@ -297,7 +155,7 @@ const Filter = ({ ...props }) => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleFilter} style={styles.accept}>
-                  <Text style={{ fontWeight: "bold" }}>Accept</Text>
+                  <Text style={{ fontWeight: "bold",color:'#fff' }}>UPDATE</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -313,23 +171,25 @@ const mapStateToProps = (state) => {
     initialDistance: state.location.initialDistance,
   };
 };
-export default connect(mapStateToProps, { getAdminCategory, distanceRadius })(
-  Filter
-);
+
+export default connect(mapStateToProps, {
+  getAdminCategory,
+  distanceRadius,
+})(Filter);
 
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    height: deviceHeight,
   },
   filterWrapper: {
     backgroundColor: "#fff",
     width: deviceWidth,
-    // height: deviceHeight,
-    height: deviceHeight - 300,
+    height: 420,
     position: "absolute",
-    paddingTop: 10,
+    paddingTop: 5,
     paddingLeft: 10,
     paddingRight: 10,
     zIndex: 1,
@@ -337,13 +197,19 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
   },
+  transparent: {
+    height: 100,
+    flex: 1,
+    width: deviceWidth,
+    backgroundColor: "rgba(0, 0, 0, .6)",
+  },
   filterInner: {
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-between",
     paddingLeft: 15,
     paddingRight: 15,
-    paddingTop: 20,
+    paddingTop: 0,
   },
   filter: {
     fontSize: 25,
@@ -366,13 +232,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   filterCategory: {
-    zIndex: -1,
-    position: "absolute",
-    top: 60,
-    left: 5,
-    flex: 1,
-    flexDirection: "column",
-    width: 310,
+    paddingTop: 20,
   },
   categoryText: {
     fontSize: 15,
@@ -397,9 +257,9 @@ const styles = StyleSheet.create({
     color: "green",
   },
   accept: {
-    width: 80,
-    height: 25,
-    backgroundColor: "#a9a9a9",
+    width: '100%',
+    backgroundColor: "#5c9b84", 
+    padding:15,
     alignItems: "center",
   },
 });

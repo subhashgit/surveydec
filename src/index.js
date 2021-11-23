@@ -6,58 +6,74 @@ import { connect } from "react-redux";
 import { verifyUser } from "../src/store/actions/Auth";
 import Authority from "../routes/Authority";
 import { profileInformation } from "../src/store/actions/User";
-import { LogBox } from "react-native";
-// import * as Location from "expo-location";
-import { View, Text, BackHandler } from "react-native";
-import { Button } from "react-native-paper";
+import { LogBox, AppState } from "react-native";
+import {
+  getDynamicLinkId,
+  getLinkFromBackBackground,
+} from "./store/actions/Services";
+import * as Linking from "expo-linking";
+import { createStackNavigator } from "@react-navigation/stack";
 
 LogBox.ignoreLogs(["Warning: ..."]);
 LogBox.ignoreAllLogs();
-
-const index = ({ userState, verifyUser, loading }) => {
+const Stack = createStackNavigator();
+const index = ({
+  userState,
+  verifyUser,
+  loading,
+  getDynamicLinkId,
+  getLinkFromBackBackground,
+}) => {
   const [isSignedIn, setSignedIn] = useState(false);
-  // const [location, setLocation] = useState(null);
-  // const [errorMsg, setErrorMsg] = useState(null);
   useEffect(() => {
+    getLinkFromBackBackground();
+    Linking.getInitialURL().then((url) => {
+      if (url !== "" && typeof url !== "object") {
+        if (url.startsWith("https")) {
+          getDynamicLinkId(url.substr(30));
+        }
+      }
+    });
+    Linking.addEventListener("url", (url) => {
+      if (url !== "" && typeof url !== "object") {
+        if (url.startsWith("https")) {
+          getDynamicLinkId(url.substr(30));
+        }
+      }
+    });
+
     verifyUser();
-
-    // if (location) {
-    //   console.log("locaton", JSON.stringify(location));
-    // }
   }, []);
 
+  const config = {
+    screens: {
+      user: {
+        screens: {
+          Guest: {
+            screens: {
+              Home: {
+                screens: {
+                  AddService: { path: "addservice" },
+                  Services: { path: "Services" },
+                  ListDetail: { path: "listdetail" },
+                },
+              },
+            },
+          },
+          MyAccount: { name: "MyAccount", path: "MyAccount" },
+        },
+      },
+    },
+  };
+
+  const linking = {
+    prefixes: ["https://serveys.page.link", "servys://"],
+    config,
+  };
   useEffect(() => {
-    // (async () => {
-    //   let { status } = await Location.requestPermissionsAsync();
-    //   if (status !== "granted") {
-    //     BackHandler.exitApp();
-    //     setErrorMsg("Permission to access location was denied");
-    //     return;
-    //   }
-    //   let location = await Location.getCurrentPositionAsync({});
-    //   setLocation(location);
-    // })();
-  }, []);
+    setSignedIn(userState);
+  }, [userState]);
 
-  // const allowLocation = () => {
-  //   (async () => {
-  //     let { status } = await Location.requestPermissionsAsync();
-  //     if (status !== "granted") {
-  //       BackHandler.exitApp();
-  //       setErrorMsg("Permission to access location was denied");
-  //       return;
-  //     }
-
-  //     let location = await Location.getCurrentPositionAsync({});
-  //     setLocation(location);
-  //   })();
-  // };
-
-  // if (errorMsg) {
-  //   text = errorMsg;
-  // } else if (location) {
-  //   text = JSON.stringify(location);
-  // }
   useEffect(() => {
     setSignedIn(userState);
   }, [userState]);
@@ -66,7 +82,7 @@ const index = ({ userState, verifyUser, loading }) => {
       {loading ? (
         <Loader />
       ) : (
-        <NavigationContainer>
+        <NavigationContainer linking={linking}>
           {isSignedIn ? (
             <>
               <Authority />
@@ -86,6 +102,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { verifyUser, profileInformation })(
-  index
-);
+export default connect(mapStateToProps, {
+  verifyUser,
+  profileInformation,
+  getDynamicLinkId,
+  getLinkFromBackBackground,
+})(index);

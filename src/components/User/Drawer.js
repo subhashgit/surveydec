@@ -17,17 +17,13 @@ import {
 } from "@expo/vector-icons";
 import { styles } from "../../styles/User/UserHeaderStyle";
 import { connect } from "react-redux";
-import { profileInformation, userStatus } from "../../store/actions/User";
+import {
+  profileInformation,
+  userStatus,
+  switchLoader,
+} from "../../store/actions/User";
 import imagebg from "../../../assets/images/hamburger_BG.jpg";
-import firebase from "../../config/config.js";
-const signOutUser = async () => {
-    try {
-        await firebase.auth().signOut();
-        navigate('Auth');
-    } catch (e) {
-        console.log(e);
-    }
-}
+import { Logout } from "../../store/actions/Auth";
 
 const Drawer = ({
   navigation,
@@ -36,7 +32,12 @@ const Drawer = ({
   setModalVisible,
   userStatus,
   checkVisible,
+  switchLoader,
+  Logout,
 }) => {
+  const signOutUser = () => {
+    Logout();
+  };
   const [state, setState] = useState({
     update: false,
     photo: "",
@@ -71,11 +72,10 @@ const Drawer = ({
   }, [profileInfo]);
   const accountpage = () => {
     navigation.dangerouslyGetParent().navigate("MyAccount");
-
     setModalVisible(!modalVisible);
   };
   useEffect(() => {
-    console.log("Vlueeee", state.switchValue);
+    userStatus(state.switchValue);
   }, [state.switchValue]);
 
   return (
@@ -98,7 +98,7 @@ const Drawer = ({
               </TouchableHighlight>
               <View style={styles.listnavwrapper}>
                 <TouchableOpacity style={styles.listnav}>
-                  <Ionicons style={styles.navicon} name="ios-hand" size={30} />
+                 <MaterialCommunityIcons name="hand-left"  style={styles.navicon} size={30} />
                   <Text style={styles.navicontxt}>Services</Text>
                 </TouchableOpacity>
 
@@ -166,9 +166,10 @@ const Drawer = ({
                       width: 200,
                     }}
                     onValueChange={(switchValue) => {
-                      setState({ ...state, switchValue });
-                      userStatus(switchValue);
+                      // console.log("dsfdf");
+                      switchLoader(true);
                       setModalVisible(!modalVisible);
+                      setState({ ...state, switchValue });
                     }}
                   />
                 </View>
@@ -195,7 +196,7 @@ const Drawer = ({
                     <Text style={styles.naviconsubtxt}>Your profile </Text>{" "}
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity  onPress={signOutUser} style={styles.listnav}>
+                <TouchableOpacity onPress={signOutUser} style={styles.listnav}>
                   <MaterialCommunityIcons
                     style={styles.navicon}
                     name="key"
@@ -206,14 +207,26 @@ const Drawer = ({
               </View>
               <View style={styles.copyrights}>
                 <Text style={styles.rightstxt}> ©2020 Servey </Text>
-                <View style={{display:'flex',flexDirection:'row'}}>
-                <Text style={styles.rightstxt} onPress={ ()=> Linking.openURL('http://servy.co.za/terms-of-use/') }> Term & Conditions. </Text> 
+                <View style={{ display: "flex", flexDirection: "row" }}>
+                  <Text
+                    style={styles.rightstxt}
+                    onPress={() =>
+                      Linking.openURL("http://servy.co.za/terms-of-use/")
+                    }
+                  >
+                    {" "}
+                    Term & Conditions.{" "}
+                  </Text>
 
-                <Text style={styles.rightstxt} onPress={ ()=> Linking.openURL('http://servy.co.za/privacy-policy/') }> Privacy policy
-                </Text>
+                  <Text
+                    style={styles.rightstxt}
+                    onPress={() =>
+                      Linking.openURL("http://servy.co.za/privacy-policy/")
+                    }
+                  >
+                    Privacy policy
+                  </Text>
                 </View>
-                
-                
               </View>
             </View>
           </View>
@@ -228,6 +241,9 @@ const mapStateToProps = (state) => {
     checkVisible: state.User.status,
   };
 };
-export default connect(mapStateToProps, { profileInformation, userStatus })(
-  Drawer
-);
+export default connect(mapStateToProps, {
+  profileInformation,
+  userStatus,
+  switchLoader,
+  Logout,
+})(Drawer);

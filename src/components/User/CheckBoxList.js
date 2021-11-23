@@ -4,22 +4,27 @@ import CheckBox from "@react-native-community/checkbox";
 const CheckBoxList = ({
   head,
   array,
-  setArray,
   label,
   select,
   index,
   state,
   id,
+  initialValue,
 }) => {
+  const [check, setCheck] = useState(false);
   useEffect(() => {
     setCheck(false);
   }, [select]);
-  const [check, setCheck] = useState(false);
   useEffect(() => {
     if (array === []) {
       setCheck(false);
     }
   }, []);
+  useEffect(() => {
+    if (initialValue) {
+      setCheck(initialValue.attributeState);
+    }
+  }, [initialValue]);
   const handleCheckBox = () => {
     setCheck(!check);
     array.splice(index, 1, {

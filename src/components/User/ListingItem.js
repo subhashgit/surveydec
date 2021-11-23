@@ -8,7 +8,8 @@ import Rating from "../Generic/Rating";
 import { LinearGradient } from "expo-linear-gradient";
 import bg from "../../../assets/images/bg.png";
 import { connect } from "react-redux";
-import { getDistance, getPreciseDistance } from "geolib";
+import { getPreciseDistance } from "geolib";
+import { servicesLenght } from "../../store/actions/Services";
 const stars = [1, 2, 3, 4, 5];
 const ListingItem = ({
   data,
@@ -16,28 +17,26 @@ const ListingItem = ({
   pad,
   userLocation,
   initialDistance,
+  servicesLenght,
+  serviceAvailable,
 }) => {
   const [serviceImage, setServiceImage] = useState({
     image: "",
     state: false,
   });
-  const [compDistance, setCompDistace] = useState(10);
 
-  useEffect(() => {
-    setCompDistace(initialDistance);
-  }, [initialDistance]);
   const [distance, setDistance] = useState(0);
   useEffect(() => {
-    if (data.imagesUrl !== []) {
+    if (data.imagesUrl.length !== 0) {
       setServiceImage({
         ...serviceImage,
         image: data.imagesUrl[0],
         state: true,
       });
     }
-  }, [data.imagesUrl]);
+  }, [data]);
   useEffect(() => {
-    if (userLocation) {
+    if (userLocation !== null) {
       setDistance(
         getPreciseDistance(
           {
@@ -48,13 +47,25 @@ const ListingItem = ({
             latitude: data.maps.coords.latitude,
             longitude: data.maps.coords.longitude,
           }
-        )
+        ) / 1609.344
       );
     }
   }, [data, userLocation]);
+
+  useEffect(() => {
+    if (serviceAvailable === false) {
+      if (userLocation !== null && distance !== 0) {
+        if (distance <= initialDistance) {
+          servicesLenght(true);
+        }
+        // console.log("hereerer")
+      }
+    }
+  }, [distance , initialDistance]);
+
   return (
     <>
-      {distance <= compDistance && (
+      {/*userLocation !== null && distance <= initialDistance*/ true && (
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => {
@@ -128,6 +139,7 @@ const mapStateToProps = (state) => {
   return {
     userLocation: state.location.userLocation,
     initialDistance: state.location.initialDistance,
+    serviceAvailable: state.Service.servicesLenght,
   };
 };
-export default connect(mapStateToProps)(ListingItem);
+export default connect(mapStateToProps, { servicesLenght })(ListingItem);

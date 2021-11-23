@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import {
   View,
-  TouchableOpacity,
   Image,
   Text,
   ScrollView,
   TextInput,
+  FlatList,
 } from "react-native";
-import Header from "../../components/User/Header";
+import { TouchableOpacity } from "react-native-gesture-handler";
 import { styles } from "../../styles/Account/AccountStyle";
 import Input from "../../components/Generic/AccountInput";
 import { FontAwesome5, AntDesign, Entypo } from "react-native-vector-icons";
@@ -17,70 +17,96 @@ import {
 } from "../../store/actions/User";
 import { connect } from "react-redux";
 import Loader from "../Auth/Loader";
+import Calendar from "./../../components/User/Calender";
+import { Button } from "native-base";
 
-const Account = ({
-  navigation,
-  profileInformation,
-  profileInfo,
-  updateInformation,
-}) => {
-  let profile = profileInfo[0];
+const Account = ({ ...props }) => {
+  let navigation = props.navigation;
+  let profileInformation = props.profileInformation;
+  let profileInfo = props.profileInfo;
+  let updateInformation = props.updateInformation;
+  const [Edit, setEdit] = useState(false);
+  const [check, setCheck] = useState(false);
+  const [state, setState] = useState({
+    about: "",
+    userType: "",
+    firstName: "",
+    lastName: "",
+    Email: "",
+    PhoneNumber: "",
+    websiteUrl: "",
+    facebookUrl: "",
+    instagramUrl: "",
+    userId: "",
+    imageUrl: "",
+  });
+
   const handleNavigation = () => {
     navigation.navigate("EditImage");
   };
   useEffect(() => {
     profileInformation();
-    profileInfo.map((data) => {
-      if (data !== null) {
-        setCheck(true);
-      }
-      setImageUrl(data.photoURL);
-    });
     setEdit(false);
   }, []);
 
-  const [Edit, setEdit] = useState(false);
-  const [state, setState] = useState({
-    about: profile.about,
-    userType: profile.userType,
-    firstName: profile.firstName,
-    lastName: profile.lastName,
-    Email: profile.Email,
-    PhoneNumber: profile.PhoneNumber,
-    websiteUrl: profile.websiteUrl,
-    facebookUrl: profile.websiteUrl,
-    instagramUrl: profile.instagramUrl,
-    userId: profile.id,
-  });
+  useEffect(() => {
+    profileInfo.map((profile) => {
+      setState({
+        ...state,
+        about: profile.about,
+        userType: profile.userType,
+        firstName: profile.firstName,
+        lastName: profile.lastName,
+        Email: profile.Email,
+        PhoneNumber: profile.PhoneNumber,
+        websiteUrl: profile.websiteUrl,
+        facebookUrl: profile.websiteUrl,
+        instagramUrl: profile.instagramUrl,
+        userId: profile.id,
+        imageUrl: profile.photoURL,
+      });
+    });
+
+    setCheck(true);
+  }, [profileInfo]);
+
   const handleAccountInfo = () => {
     updateInformation(state);
   };
-  const [imageUrl, setImageUrl] = useState("");
-  const [check, setCheck] = useState(false);
-  useEffect(() => {
-    profileInfo.map((data) => {
-      if (data !== null) {
-        setCheck(true);
-      }
-      setImageUrl(data.photoURL);
-    });
-    profileInformation();
-  }, [updateInformation]);
+  const navigationHandler = () => {
+    navigation.goBack();
+  };
+
+  const [callCalender, setCallCalender] = useState(false);
+  const timeSlotes = [
+    { day: "Monday", timing: "3-40-2012" },
+    { day: "Tuesday", timing: "3-40-2012" },
+    { day: "Wednesday", timing: "3-40-2012" },
+    { day: "Monday", timing: "3-40-2012" },
+  ];
 
   return (
     <>
       {check ? (
         <ScrollView style={styles.screen}>
+          <View style={styles.header}>
+            <TouchableOpacity onPress={navigationHandler}>
+              <AntDesign name="arrowleft" size={25} color="#000" />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.btn}>
+              <Text>Save & Exit</Text>
+            </TouchableOpacity>
+          </View>
           <View>
-            <Header navigation={navigation} visible={true} name="My Accounnt" />
             <View>
               <View style={styles.content}>
                 <View>
                   <TouchableOpacity style={styles.imageComponent}>
-                    {imageUrl !== "" ? (
+                    {state.imageUrl !== "" ? (
                       <Image
                         style={{ height: 100, width: 100, borderRadius: 200 }}
-                        source={{ uri: imageUrl }}
+                        source={{ uri: state.imageUrl }}
                       />
                     ) : (
                       <Image
@@ -100,10 +126,11 @@ const Account = ({
                       </TouchableOpacity>
                     </View>
                   </TouchableOpacity>
-                  <Text style={styles.text}>{profile.Name}</Text>
+                  <Text style={styles.text}>{state.Name}</Text>
                 </View>
                 {Edit ? (
                   <TouchableOpacity
+                    activeOpacity={0.5}
                     onPress={handleAccountInfo}
                     style={{
                       paddingTop: 20,
@@ -127,7 +154,7 @@ const Account = ({
                     minHeight={100}
                     multiline={true}
                     numberOfLines={20}
-                    defaultValue={profile.about}
+                    defaultValue={state.about}
                     maxLength={300}
                     placeholder="Give your clients a short bio about yourself, and the service you offer?  Tell them what do you like about your service, and remember honesty goes a long way in the online world 💫"
                     style={styles.input}
@@ -142,7 +169,7 @@ const Account = ({
                 <Input
                   head="User Type"
                   editable={true}
-                  defaultValue={profile.userType}
+                  defaultValue={state.userType}
                   placeHolder=""
                   onChangeText={(text) => {
                     setEdit(true);
@@ -151,7 +178,7 @@ const Account = ({
                 />
                 <Input
                   head="First Name"
-                  defaultValue={profile.firstName}
+                  defaultValue={state.firstName}
                   editable={true}
                   placeHolder=""
                   onChangeText={(text) => {
@@ -161,7 +188,7 @@ const Account = ({
                 />
                 <Input
                   head="Last Name"
-                  defaultValue={profile.lastName}
+                  defaultValue={state.lastName}
                   editable={true}
                   placeHolder=""
                   onChangeText={(text) => {
@@ -171,7 +198,7 @@ const Account = ({
                 />
                 <Input
                   head="Email"
-                  defaultValue={profile.Email}
+                  defaultValue={state.Email}
                   editable={true}
                   placeHolder=""
                   onChangeText={(text) => {
@@ -181,7 +208,7 @@ const Account = ({
                 />
                 <Input
                   head="Phone "
-                  defaultValue={profile.PhoneNumber}
+                  defaultValue={state.PhoneNumber}
                   editable={true}
                   placeHolder=""
                   onChangeText={(text) => {
@@ -194,7 +221,7 @@ const Account = ({
                   <Entypo name="globe" style={styles.texticon} />
                   <Input
                     head="Website"
-                    defaultValue={profile.websiteUrl}
+                    defaultValue={state.websiteUrl}
                     editable={true}
                     placeHolder="enter url"
                     onChangeText={(text) => {
@@ -207,7 +234,7 @@ const Account = ({
                   <Entypo name="facebook" style={styles.texticon} />
                   <Input
                     head="Facebook"
-                    defaultValue={profile.facebookUrl}
+                    defaultValue={state.facebookUrl}
                     editable={true}
                     placeHolder="enter url"
                     onChangeText={(text) => {
@@ -220,13 +247,44 @@ const Account = ({
                   <AntDesign name="instagram" style={styles.texticon} />
                   <Input
                     head="Instagram"
-                    defaultValue={profile.instagramUrl}
+                    defaultValue={state.instagramUrl}
                     editable={true}
                     placeHolder="enter url"
                     onChangeText={(text) => {
                       setEdit(true);
                       setState({ ...state, instagramUrl: text });
                     }}
+                  />
+                </View>
+                <View>
+                  <Text style={styles.heading}>Time Slots</Text>
+                  <FlatList
+                    item={timeSlotes}
+                    renderItem={({ item }) => (
+                      <View>
+                        <Text> {item.day} </Text>
+                        <Text> {item.timing} </Text>
+                      </View>
+                    )}
+                  />
+
+                  <Button
+                    onPress={() => setCallCalender(true)}
+                    style={{
+                      marginTop: 10,
+                      backgroundColor: "#f7f7f7",
+                      elevation: 0,
+                      borderRadius: 5,
+                      borderColor: "#a9a9a9",
+                      borderWidth: 1,
+                    }}
+                    full
+                  >
+                    <Text>Add Timing</Text>
+                  </Button>
+                  <Calendar
+                    setCallCalender={setCallCalender}
+                    callCalender={callCalender}
                   />
                 </View>
               </View>

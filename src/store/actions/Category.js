@@ -33,7 +33,6 @@ export const AddCategory = (category, features) => async (
       dispatch({
         type: "GET_CATEGORY",
       });
-      console.log("sucessss");
     });
 };
 export const updateCategory = (category, features, id) => async (
@@ -83,7 +82,7 @@ export const getAdminCategory = () => async (
   const firebase = getFirebase();
   let parentCategory = [];
 
-  const res = db
+  await db
     .collection("categories")
     .get()
     .then((docRef) => {
@@ -114,7 +113,6 @@ export const deleteCategory = (id) => async (
         .get()
         .then((docRef) => {
           docRef.docs.forEach((value, index) => {
-            console.log("valueee", value.id);
             parentCategory.push({ ...value.data(), id: value.id });
           });
         })

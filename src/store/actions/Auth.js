@@ -1,4 +1,51 @@
 import * as Google from "expo-google-app-auth";
+import * as Notifications from "expo-notifications";
+import axios from "axios";
+
+export const sendPushNotification = (id, dataa, documentId) => async (
+  dispatch,
+  getState,
+  { getFirestore, getFirebase }
+) => {
+  const db = getFirestore();
+
+  const providerInfo = await db.collection("users").doc(id).get();
+  const dt = providerInfo.data().deviceToken;
+  const docRef = await db.collection("services").doc(documentId);
+  console.log("daataaaa", dt.data);
+
+  docRef.update({
+    approve: true,
+  });
+
+  const res = await axios({
+    method: "post",
+    url: "https://fcm.googleapis.com/fcm/send",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization:
+        "Bearer AAAA1F4uasE:APA91bGNhUMh9-eQT5M-f7bv5M0y7Y8aDlSqpOxPqKiQgwYa0nSLIVVKq1-GNpWxj3K2UMJzz06kRBbu8Kp0kj8Zkh2ThxzJWtPh1JVpd-rF8rctp8Jr-r_7ptnTp7Nz5DO7Uy1-3IuZ",
+    },
+    data: JSON.stringify({
+      to: dt.data,
+      data: {
+        experienceId: "@numansafi97/servys",
+        title: "Congratulations",
+        message: `Your Listing has been Approved - [ ${dataa} ]`,
+      },
+    }),
+  });
+  await db
+    .collection("users")
+    .doc(id)
+    .collection("notifications")
+    .add({
+      message: `your Listing has been published- [ ${dataa}] `,
+      cretedAt: Date.now(),
+      listingId: documentId,
+    });
+};
+
 export const onSignUp = (user) => async (
   dispatch,
   getState,
@@ -16,10 +63,6 @@ export const onSignUp = (user) => async (
     .createUserWithEmailAndPassword(email, password)
     .then((res) => {
       if (res.additionalUserInfo.isNewUser) {
-        dispatch({
-          type: "SIGNIN_SUCCESS",
-          payload: false,
-        });
         db.collection("users").doc(res.user.uid).set({
           Name: name,
           Email: email,
@@ -34,21 +77,25 @@ export const onSignUp = (user) => async (
           websiteUrl: "",
           facebookUrl: "",
           instagramUrl: "",
-
           cretedAt: Date.now(),
         });
       }
+    })
+    .then(() => {
+      dispatch({
+        type: "SIGNIN_SUCCESS",
+        payload: true,
+      });
     })
     .catch((error) => {
       dispatch({
         type: "SIGNUP_SUCCESS",
         payload: false,
       });
-      let errorCode = error.code;
-      let errorMessage = error.message;
-      if (errorCode == "auth/weak-password") {
-      } else {
-      }
+      dispatch({
+        type: "SIGNUP_FAIL",
+        payload: error.message,
+      });
     });
 };
 export const signInWithEmail = (email, password) => async (
@@ -64,13 +111,11 @@ export const signInWithEmail = (email, password) => async (
     .signInWithEmailAndPassword(email, password)
     .then((res) => {})
     .catch((error) => {
-      let errorCode = error.code;
       let errorMessage = error.message;
-      if (errorCode == "auth/weak-password") {
-        console.log("weak password");
-      } else {
-        console.log("there is error");
-      }
+      dispatch({
+        type: "LOGIN_ERROR",
+        payload: errorMessage,
+      });
     });
 };
 
@@ -85,20 +130,22 @@ export const verifyUser = () => async (
     type: "LOADING",
     payload: true,
   });
+
   await firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
-      dispatch({
-        type: "SIGNIN_SUCCESS",
-        payload: true,
-      });
       dispatch({
         type: "CURRENT_USER",
         payload: user.uid,
       });
       dispatch({
+        type: "SIGNIN_SUCCESS",
+        payload: true,
+      });
+      dispatch({
         type: "LOADING",
         payload: false,
       });
+    
     } else {
       dispatch({
         type: "SIGNIN_SUCCESS",
@@ -127,9 +174,7 @@ export const Logout = () => async (
         payload: false,
       });
     })
-    .catch(function (error) {
-      console.log("signout error", error);
-    });
+    .catch(function (error) {});
 };
 
 export const signInWithGoogle = () => async (
@@ -172,7 +217,6 @@ export const signInWithGoogle = () => async (
               googleUser.idToken,
               googleUser.accessToken
             );
-
             firebase
               .auth()
               .signInWithCredential(credential)
@@ -191,23 +235,24 @@ export const signInWithGoogle = () => async (
                     websiteUrl: "",
                     facebookUrl: "",
                     instagramUrl: "",
+                    deviceToken: "",
                   });
                 }
               })
               .catch(function (error) {
-                console.log(error, "errrrr");
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                var email = error.email;
-                var credential = error.credential;
+                dispatch({
+                  type: "LOADING",
+                  payload: false,
+                });
               });
           } else {
-            console.log("User already signed-in Firebase.");
           }
         });
     };
     const result = await Google.logInAsync({
       androidClientId:
+        "256539792953-u00leiuuf4odj68p6ephgfneq2r1p7uo.apps.googleusercontent.com",
+      androidStandaloneAppClientId:
         "256539792953-u00leiuuf4odj68p6ephgfneq2r1p7uo.apps.googleusercontent.com",
       status: true,
       xfbml: true,
@@ -217,34 +262,39 @@ export const signInWithGoogle = () => async (
       onSignIn(result);
       return result.accessToken;
     } else {
+      dispatch({
+        type: "LOADING",
+        payload: false,
+      });
       return { cancelled: true };
     }
   } catch ({ message }) {
-    alert("login: Error:" + message);
+    dispatch({
+      type: "LOADING",
+      payload: false,
+    });
+    alert("login: Error:" + message + "Please Retry");
   }
 };
-
 export const Authorization = () => async (
   dispatch,
   getState,
   { getFirestore, getFirebase }
 ) => {
   const db = getFirestore();
-  const firebase = getFirebase();
   const state = getState();
   let currentUser = state.Auth.user;
-  let data;
+
   dispatch({
     type: "AUTH_CHECK",
     payload: true,
   });
-
-  const res = await db
+  await db
     .collection("users")
     .doc(currentUser)
-    .onSnapshot(function (response) {
-      console.log("response data", response.data());
-      if (response.data().type) {
+    .get()
+    .then((response) => {
+      if (response) {
         dispatch({
           type: "ADMIN",
           payload: response.data().type,
@@ -254,5 +304,33 @@ export const Authorization = () => async (
           payload: false,
         });
       }
+    })
+    .then(async () => {
+      try {
+        const settings = await Notifications.getPermissionsAsync();
+        if (settings.status === "granted") {
+          const token = await Notifications.getDevicePushTokenAsync();
+          console.log("stetttings", token);
+          var docRef = await db.collection("users").doc(currentUser);
+          docRef.update({
+            deviceToken: token,
+          });
+        }
+      } catch (err) {
+        console.log("ERROR", err);
+      }
+    })
+    .catch(() => {
+      dispatch({
+        type: "AUTH_CHECK",
+        payload: false,
+      });
     });
+};
+
+export const removeErrorMessage = () => async (dispatch) => {
+  dispatch({
+    type: "SIGNUP_FAIL",
+    payload: "",
+  });
 };

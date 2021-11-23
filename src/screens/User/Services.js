@@ -1,128 +1,98 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Dimensions, ScrollView } from "react-native";
 import Header from "../../components/User/Header";
-import ListingItem from "../../components/User/ListingItem";
 import { Text } from "native-base";
 import { connect } from "react-redux";
-import Loader from "./Loader";
+import Loader from "../Auth/Loader";
 import {
   getServices,
-  getServicesByCategory,
+  getServicesByProvider,
 } from "../../store/actions/Services";
-import { getAdminCategory } from "../../store/actions/Category";
-import MutipleSelect from "../../components/User/Multiple";
+import { switchLoader } from "../../store/actions/User";
+import ProviderItem from "../../components/User/ProviderItem";
+import ProviderModal from "../../components/User/ProviderModal";
+
 let deviceHeight = Dimensions.get("window").height;
+let deviceWidth = Dimensions.get("window").width;
 
-const Services = ({ ...props }) => {
+const Services = (props) => {
   let navigation = props.navigation;
-  let getServices = props.getServices;
-  let getServicesByCategory = props.getServicesByCategory;
-  let getAdminCategory = props.getAdminCategory;
-  let categories = props.categories;
-  let services = props.services;
-
-  const [loading, setLoading] = useState(true);
-  const [newServices, setNewServices] = useState([]);
-  // const [bool, setBool] = useEffect(false);
+  let serviceLoader = props.serviceLoader;
+  let switchLoading = props.switchLoading;
+  let getServicesByProvider = props.getServicesByProvider;
+  let providerServices = props.providerServices;
+  const [providerModal, setProviderModal] = useState(false);
 
   useEffect(() => {
-    if (services.length === 0) {
-      getServices();
+    if (providerServices.length === 0) {
+      getServicesByProvider();
     }
-
-    getAdminCategory();
   }, []);
-  useEffect(() => {
-    if (filterCategory.length === 0) {
-      setNewServices(services);
-    }
-  }, [services, filterCategory]);
-
-  useEffect(() => {
-    if (props.route.params.id === 2) {
-      getServicesByCategory(props.route.params.state);
-    }
-    if (props.route.params.id === 3) {
-      getServices();
-    }
-  }, [props.route]);
-
-  useEffect(() => {
-    setLoading(props.serviceLoader);
-  }, [props.serviceLoader]);
-
-  const [filterCategory, setFilterCategory] = useState([]);
-
-  useEffect(() => {
-    if (filterCategory.length === 0) {
-      setNewServices(props.services);
-    }
-  }, [filterCategory]);
 
   return (
-    <View style={styles.screen}>
-      <Header name="Services" navigation={navigation} visible={true} />
-      <MutipleSelect
-        setFilterCategory={setFilterCategory}
-        categories={categories}
-      />
-      {loading ? (
+    <View>
+      {switchLoading && (
         <View
           style={{
-            backgroundColor: "#f7f7f7",
-            flex: 1,
+            zIndex: 1,
+            width: deviceWidth,
+            height: deviceHeight,
+            backgroundColor: "#fff",
+            display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            paddingTop: 300,
-            paddingBottom: 300,
           }}
         >
-          <Loader />
+          <Text>Switching...</Text>
         </View>
-      ) : (
-        <>
-          {newServices.length === 0 ? (
-            <View
-              style={{
-                backgroundColor: "#f7f7f7",
-                paddingTop: 20,
-                paddingBottom: 20,
-                height: deviceHeight,
-              }}
-            >
-              <Text>No Service Available</Text>
-            </View>
-          ) : (
-            <View style={styles.list}>
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={{ paddingTop: 50 }}></View>
-                {services.map((data) => {
-                  if (filterCategory.includes(data.category)) {
-                    return (
-                      <ListingItem
-                        pad={0}
-                        key={data.id}
-                        data={data}
-                        navigation={navigation}
-                      />
-                    );
-                  }
-                  if (filterCategory.length === 0) {
-                    return (
-                      <ListingItem
-                        pad={0}
-                        key={data.id}
-                        data={data}
-                        navigation={navigation}
-                      />
-                    );
-                  }
-                })}
-              </ScrollView>
-            </View>
-          )}
-        </>
       )}
+      <View style={styles.screen}>
+        <Header
+          filterButton={false}
+          notificationButton={true}
+          name="Services"
+          navigation={navigation}
+          visible={true}
+        />
+        {serviceLoader ? (
+          <View style={styles.loading}>
+            <Loader />
+          </View>
+        ) : (
+          <>
+            {providerServices.length === 0 ? (
+              <View style={styles.noService}>
+                <Text style={{ textAlign: "center", color: "#a9a9a9" }}>
+                  No Service Available
+                </Text>
+              </View>
+            ) : (
+              <View style={{ paddingTop: 30, paddingBottom: 80 }}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  <View style={{ minHeight: deviceHeight }}>
+                    {providerServices.map((data) => {
+                      return (
+                        <ProviderItem
+                          setProviderModal={setProviderModal}
+                          pad={0}
+                          key={data.id}
+                          data={data}
+                          navigation={navigation}
+                        />
+                      );
+                    })}
+                  </View>
+                </ScrollView>
+              </View>
+            )}
+          </>
+        )}
+        <ProviderModal
+          navigation={navigation}
+          setProviderModal={setProviderModal}
+          visible={providerModal}
+        />
+      </View>
     </View>
   );
 };
@@ -131,22 +101,41 @@ const mapStateToProps = (state) => {
     services: state.Service.services,
     serviceLoader: state.Service.serviceLoader,
     categories: state.category.adminCollection,
+    switchLoading: state.User.switchLoader,
+    checkVisible: state.User.status,
+    currentUser: state.Auth.user,
+    providerServices: state.Service.userServices,
   };
 };
 export default connect(mapStateToProps, {
   getServices,
-  getServicesByCategory,
-  getAdminCategory,
+  switchLoader,
+  getServicesByProvider,
 })(Services);
 
 const styles = StyleSheet.create({
   screen: {
     backgroundColor: "#f7f7f7",
     padding: 15,
-    paddingTop: 35,
+    paddingTop: 20,
+    paddingBottom: 80,
   },
-  list: {
-    paddingTop: 30,
-    marginBottom: 130,
+
+  noService: {
+    backgroundColor: "#f7f7f7",
+    paddingTop: 80,
+    paddingBottom: 20,
+    height: deviceHeight,
+  },
+  proService: {
+    backgroundColor: "#f7f7f7",
+    height: deviceHeight,
+  },
+  loading: {
+    backgroundColor: "#f7f7f7",
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    minHeight: deviceHeight - 100,
   },
 });

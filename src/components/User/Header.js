@@ -1,27 +1,34 @@
 import React, { useEffect, useState } from "react";
 import { Text, Image, View, TouchableOpacity, Dimensions } from "react-native";
-import { Ionicons, Entypo } from "@expo/vector-icons";
+import { Ionicons, Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
 import Drawer from "./Drawer";
 import { connect } from "react-redux";
-import { profileInformation } from "../../store/actions/User";
+import {
+  profileInformation,
+  userNotifications,
+} from "../../store/actions/User";
 import { styles } from "../../styles/User/UserHeaderStyle";
 const Header = ({ ...props }) => {
   let navigation = props.navigation;
   let profileInfo = props.profileInfo;
   let checkVisible = props.checkVisible;
+  let filterButton = props.filterButton;
+  let notificationButton = props.notificationButton;
+  let notifications = props.notifications;
+  let userNotifications = props.userNotifications;
+
   const [state, setState] = useState({
     update: false,
     photo: "",
     switchValue: false,
   });
-  useEffect(() => {
-    profileInfo.map((data) => {
-      if (data.photoURL !== "") {
-        setState({ ...state, update: true, photo: data.photoURL });
-      }
-    });
-  }, []);
   const [userName, setUserName] = useState("");
+  const [check, setCheck] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  useEffect(() => {
+    userNotifications();
+  }, []);
+
   useEffect(() => {
     profileInfo.map((data) => {
       if (data.photoURL !== "") {
@@ -39,21 +46,21 @@ const Header = ({ ...props }) => {
       }
     });
   }, [profileInfo]);
-  const [check, setCheck] = useState(false);
+
   useEffect(() => {
-    console.log(checkVisible);
     setCheck(checkVisible);
   }, [checkVisible]);
 
-  const [modalVisible, setModalVisible] = useState(false);
-
   const navigationHanlder = () => {
-    navigation.navigate("AddService");
+    navigation.navigate("AddService", {
+      key: 2,
+    });
   };
 
   const handleNotification = () => {
-    navigation.navigate("Notification");
+    navigation.navigate("Notification", {navigation: navigation});
   };
+
   return (
     <>
       <View style={styles.container}>
@@ -78,20 +85,55 @@ const Header = ({ ...props }) => {
             </Text>
           </View>
           <View style={styles.icons}>
-            {check && (
+            {filterButton !== true && check && (
               <Entypo
                 onPress={navigationHanlder}
                 name="plus"
-                onPress={navigationHanlder}
                 size={25}
                 color={"#000"}
                 style={{ paddingRight: 12 }}
               />
             )}
-            <TouchableOpacity onPress={handleNotification}>
-              <Ionicons name={"ios-notifications"} size={25} color={"#000"} />
-            </TouchableOpacity>
+            {notificationButton && (
+              <TouchableOpacity
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  position: "relative",
+                }}
+                onPress={handleNotification}
+              >
+                {notifications.length !== 0 && (
+                  <Text
+                    style={{
+                      backgroundColor: "#e84b19",
+                      position: "absolute",
+                      left: -8,
+                      top: -10,
+                      width: 20,
+                      textAlign: "center",
+                      borderTopRightRadius: 10,
+                      borderTopLeftRadius: 10,
+                      borderBottomLeftRadius: 10,
+                      borderBottomRightRadius: 10,
+                      color: "#fff",
+                      zIndex: 1,
+                    }}
+                  >
+                    {notifications.length}
+                  </Text>
+                )}
+                <Ionicons name={"ios-notifications"} size={25} color={"#000"} />
+              </TouchableOpacity>
+            )}
           </View>
+          {filterButton && (
+            <MaterialCommunityIcons
+              onPress={props.handleFilter}
+              style={{ fontSize: 25 }}
+              name="filter-variant"
+            />
+          )}
         </View>
       </View>
       <Drawer
@@ -106,6 +148,10 @@ const mapStateToProps = (state) => {
   return {
     profileInfo: state.profile.profileInformation,
     checkVisible: state.User.status,
+    notifications: state.User.notifications,
   };
 };
-export default connect(mapStateToProps, { profileInformation })(Header);
+export default connect(mapStateToProps, {
+  profileInformation,
+  userNotifications,
+})(Header);
